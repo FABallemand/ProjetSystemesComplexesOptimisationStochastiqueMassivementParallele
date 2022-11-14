@@ -1,0 +1,137 @@
+\documentclass{article}
+
+\usepackage[margin=1.6cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{tcolorbox,listings}
+\usepackage{color}
+\usepackage{hyperref}
+\renewcommand\headrulewidth{1pt}
+\usepackage{marvosym}
+\usepackage{xcolor}
+\usepackage{tikz}
+%\usepackage{babel}
+\usepackage[french]{babel}
+\usepackage[babel=true,kerning=true]{microtype}
+\usepackage{afterpage}
+
+\newcommand\myemptypage{
+    \null
+    \thispagestyle{empty}
+    \addtocounter{page}{-1}
+    \newpage
+    }
+
+\usetikzlibrary{
+  arrows,
+  calc,
+  shapes.geometric,
+  shapes.misc,
+  shapes.symbols,
+  shapes.arrows,
+  automata,
+  through,
+  positioning,
+  scopes,
+  decorations.shapes,
+  decorations.text,
+  decorations.pathmorphing,
+  shadows}
+
+\definecolor{darkWhite}{rgb}{0.94,0.94,0.94}
+ 
+\lstset{
+    backgroundcolor=\color{darkWhite},
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    commentstyle=\color{green},
+    deletekeywords={...},
+    escapeinside={\%*}{*)},
+    extendedchars=true,
+    keepspaces=true,
+    keywordstyle=\color{blue},
+    %language=Python,
+    morekeywords={*,...},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    stepnumber=1,
+    stringstyle=\color{gray},
+    tabsize=4,
+}
+ 
+\lstdefinestyle{frameStyle}{
+    basicstyle=\sffamily,
+    numbers=left,
+    numbersep=20pt,
+    numberstyle=\tiny\color{black}
+}
+ 
+\tcbuselibrary{listings,skins,breakable}
+ 
+\newtcblisting{customFrame}{
+    arc=0mm,
+    top=0mm,
+    bottom=0mm,
+    left=3mm,
+    right=0mm,
+    width=\textwidth,
+    listing only,
+    listing options={style=frameStyle},
+    breakable
+}
+
+\fancyhead[L]{ALLEMAND Fabien\\??? Samuel}
+\fancyhead[C]{Systèmes Complexes et Optimisation Stochastique Massivement Parallèle}
+\fancyhead[R]{\includegraphics[scale=0.08]{img/logo_UFR_1.png}}
+\fancyfoot[L]{Rapport de Projet}
+\fancyfoot[R]{\today}
+
+\begin{document}
+
+\newpage
+\input{src/coverpage.tex}
+
+\newpage
+\myemptypage
+
+% \pagenumbering{roman}
+
+% \newpage
+% \myemptypage
+
+\newpage
+% \addcontentsline{toc}{section}{Table des matières}
+\renewcommand{\contentsname}{Table des matières}
+\tableofcontents
+
+\newpage
+\addcontentsline{toc}{section}{Liste des figures}
+\renewcommand{\listfigurename}{Liste des figures}
+\listoffigures
+
+\pagenumbering{arabic}
+
+\newpage
+\input{src/intro.tex}
+
+\newpage
+\input{src/conclusion.tex}
+
+\newpage
+\addcontentsline{toc}{section}{Bibliographie}
+\renewcommand{\refname}{Bibliographie}
+\bibliographystyle{plain}
+\bibliography{bibliographie}
+
+\newpage
+\myemptypage
+
+\newpage
+\input{src/annexes.tex}
+
+\end{document}

@@ -1,0 +1,3 @@
+\babel@toc {nil}{}\relax 
+\contentsline {section}{Liste des figures}{1}{section*.1}%
+\contentsline {section}{Bibliographie}{2}{section*.2}%
