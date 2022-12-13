@@ -15,6 +15,6 @@ Deadline : 13 janvier 2023
 
 ## Equipe:  
 
--ALLEMAND Fabien 
--COUTURE Louise   
+-ALLEMAND Fabien  
+-COUTURE Louise  
 -LEBOT Samuel
