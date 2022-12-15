@@ -1,0 +1,175 @@
+/*___________________________________________________________________
+
+	find_newton.ez // Loi de la Gravitation Universelle de Newton
+___________________________________________________________________*/
+
+\User declarations :
+#define NB_SAMP 1024 	  // nombre d'échantillons
+float sample[NB_SAMP][2]; // tableau de NB_SAMP points en 2 dimension
+
+#define X_MIN 0.0
+#define X_MAX 10.0
+
+#define NB_SIN 3
+float tSin[NB_SIN][3]; // amplitude, fréquence, phase
+\end
+
+\User functions :
+\end
+
+\User CUDA :
+\end
+
+\Before everything else function :
+tSin[0][0] = 2.0;
+tSin[0][1] = 42.0;
+tSin[0][2] = 4.0;
+
+tSin[1][0] = 8.0;
+tSin[1][1] = 66.6;
+tSin[1][2] = 0.12;
+
+tSin[2][0] = 1.414;
+tSin[2][1] = 1.735;
+tSin[2][2] = 2.25;
+
+for(int i=0; i<NB_SAMP; i++)
+{
+	float x = sample[i][0] = random(X_MIN, X_MAX);
+	float y = 0.0;
+	for(int s = 0; s<NB_SIN; s++)
+	{
+		y += tSin[s][0]*sin(tSin[s][1]*x+tSin[s][2]);
+	}
+	sample[i][1] = y;
+}
+\end
+
+\After everything else function :
+printf("Fonction à retrouver: y = ");
+for(int s=0; s<NB_SIN; s++)
+{
+	printf("%f*sin(%f*x+%f)+", tSin[s][0], tSin[s][1], tSin[s][2]);
+}
+printf("\b \n"); // supprimer le dernier +
+
+printf("Fonction trouvée: y = ");
+for(int s=0; s<NB_SIN; s++)
+{
+	printf("%f*sin(%f*x+%f)+", bBest->sinus[s*3+0], bBest->sinus[s*3+1], bBest->sinus[s*3+2]);
+}
+printf("\b \n"); // supprimer le dernier +
+\end
+
+\At the beginning of each generation function :
+\end
+
+\At each generation before reduce function :
+\end
+
+\At the end of each generation function :
+\end
+
+\User classes : GenomeClass
+{
+  float sinus[NB_SIN*3]; // amplitude = sinus[i*3+0], ...
+}
+\end
+
+\GenomeClass::display :
+\end
+
+\GenomeClass::initialiser :
+for(int s=0; s<NB_SIN; s++)
+{
+	Genome.sinus[s*3+0] = random(0.0, 10.0); // Amplitude
+	Genome.sinus[s*3+1] = random(0.0, 100.0); // Fréquence
+	Genome.sinus[s*3+2] = random(0.0, 6.28); // Phase [0,2*pi]
+}
+\end
+
+\GenomeClass::crossover :
+int nLocus = random(1, NB_SIN*3); // prend une valeur dans [1,8]
+
+for (int i = nLocus; i < NB_SIN*3; i++)
+{
+	child.sinus[i] = parent2.sinus[i];
+}
+\end
+
+\GenomeClass::mutator :
+float fProb = random(0.0, 1.0/(NB_SIN*3)); // 1/nb_gènes pour commencer
+for(int s=0; s<NB_SIN; s++)
+{
+	if(tossCoin(fProb))
+	{
+		Genome.sinus[s*3+0] += random(0.0, 1.0) - 0.5; // + [-0.5, 0.5]
+	}
+	if(tossCoin(fProb))
+	{
+		Genome.sinus[s*3+1] += random(0.0, 10.0) - 5.0; // + [-5.0, 5.0]
+	}
+	if(tossCoin(fProb))
+	{
+		Genome.sinus[s*3+2] += random(0.0, 0.6) - 0.3; // + [-0.3, 0.3]
+	}
+}
+\end
+
+\GenomeClass::evaluator : // intégrale entre les signaux!!
+float fScore = 0.0;
+for(int i=0; i<NB_SAMP; i++)
+{
+	float x = sample[i][0];
+	float y = 0.0;
+	for(int s = 0; s<NB_SIN; s++)
+	{
+		y += Genome.sinus[s*3+0]*sin(Genome.sinus[s*3+1]*x+Genome.sinus[s*3+2]);
+	}
+	fScore += abs(sample[i][1]-y);
+}
+\end
+
+\User Makefile options :
+\end
+
+\Default run parameters :
+	Number of generations : 100  			// NB_GEN
+	Time limit : 0              			// In seconds, 0 to deactivate
+	Population size : 10000    	 			// POP_SIZE
+	Offspring size : 100        			// (percentage or absolute) 40% of the population size or 40
+	Crossover probability : 1   			// XOVER_PROB (0.8 -> 20% of children are just clones of parent)
+	Mutation probability : 1    			// MUT_PROB (???)
+	Evaluator goal : minimise  	 			// Goal of the operation (maximise/minimise)
+	Selection operator: Tournament 2		// (Tournament returns the best out of the [arg] individuals)
+	Surviving parents : 100 % 		 		// Preselection of parents for the next generation (percentage or absolute)
+	Surviving offspring : 100 %  	 		// Preselection of children for the next generation (percentage or absolute)
+	Reduce parents operator: Tournament 2 	// How the preselection in done
+	Reduce offspring operator: Tournament 2 // How the preselection in done
+	Final reduce operator: Tournament 2 	// To determine who will be part of gen+1
+
+	Elitism : Weak // Weak (keep the "elite" best PARENTS+CHILDREN into the next generation) or Strong (keep the "elite" best PARENTS)
+	Elite : 1 
+	Print stats : true // Sho evolution, Default: true
+	Generate csv stats file : false
+	Generate gnuplot script : false
+	Generate R script : false
+	Plot stats : true // Default: true
+
+	Remote island model : false // Paralellism
+	IP file : ip.txt 			// File containing all the remote island's IP
+	Server port : 2929
+	Migration probability : 0.3
+
+	Save population : false
+	Start from file : false
+\end
+
+/*
+Go to ez.unistra.fr to install ez
+
+COMPILATION IN 2 PHASES
+1/ Compile with ez
+easena onemax.ez
+2/ Compile all C/C++/CUDA files
+*/

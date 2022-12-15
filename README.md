@@ -2,7 +2,7 @@
 
 ## Description:
 
-Retrouver la loi univrselle de la gravitation de Newton par programmation génétique à l'aide de la platefrome [EASENA](https://easea.unistra.fr/index.php/EASEA_platform) développée par l'Université de Strasbourg 🥨.
+Retrouver la loi universelle de la gravitation de Newton par programmation génétique à l'aide de la platefrome [EASENA](https://easea.unistra.fr/index.php/EASEA_platform) développée par l'Université de Strasbourg 🥨.
 
 ## Consignes de M. Collet:
 
@@ -12,6 +12,17 @@ Pour cela, tout comme on a fait pour les sommes de sinus, vous prendrez une équ
 A partir de ces 1024 points en 2D (sur le plan de l’écliptique), lancez la programmation génétique pour retrouver soit la loi universelle de la gravitation soit la 3ème loi de Kepler.
 
 Deadline : 13 janvier 2023
+
+## Méthode Utilisée
+
+Pour rappel, la loi universelle de la gravitation de Newton pour deux corps $A$ et $B$ éloignés d'une distance $d$ stipule:  
+$F_{A/B} = F_{B/A} = G \frac{M_{A}M_{B}}{d^2}$  
+avec:  
+-Les masses repectives des corps $A$ et $B$, notées $M_{A}$ et $M_{B}$, en kilogramme ($\text{kg}$)  
+-La distance séparant les deux corps $d$ en mètre ($\text{m}$)  
+-$G$ la constante gravitationnelle ($G = 6,67408 \times 10^{-11} N . \text{m}^2 . \text{kg}^2$)
+
+## Implémentation EASENA
 
 ## Equipe:  
 

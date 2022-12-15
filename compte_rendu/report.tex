@@ -93,45 +93,29 @@
 
 \begin{document}
 
-\newpage
-\input{src/coverpage.tex}
+\thispagestyle{empty}
+\addtocounter{page}{-1}
+\begin{center}
+	\baselineskip=50pt
+	\vspace*{1cm}
+	\textbf{{\Huge Systèmes Complexes et Optimisation Stochastique Massivement Parallèle}}\\
+	\vspace*{0.25cm}
+	\textbf{{\Huge Rapport de Projet}}\\
+	\vspace*{0.25cm}
+	\begin{minipage}[c]{.46\linewidth}
+        \centering
+        \textbf{Equipe:}\\
+		ALLEMAND Fabien\\
+        ??? Samuel
+    \end{minipage}
+\end{center}
+\vspace{0.1cm}
+
+\begin{figure}[H]
+\centering
+\centerline{\includegraphics[scale=1.]{img/logo_UFR_2.png}}
+\end{figure}
 
 \newpage
-\myemptypage
-
-% \pagenumbering{roman}
-
-% \newpage
-% \myemptypage
-
-\newpage
-% \addcontentsline{toc}{section}{Table des matières}
-\renewcommand{\contentsname}{Table des matières}
-\tableofcontents
-
-\newpage
-\addcontentsline{toc}{section}{Liste des figures}
-\renewcommand{\listfigurename}{Liste des figures}
-\listoffigures
-
-\pagenumbering{arabic}
-
-\newpage
-\input{src/intro.tex}
-
-\newpage
-\input{src/conclusion.tex}
-
-\newpage
-\addcontentsline{toc}{section}{Bibliographie}
-\renewcommand{\refname}{Bibliographie}
-\bibliographystyle{plain}
-\bibliography{bibliographie}
-
-\newpage
-\myemptypage
-
-\newpage
-\input{src/annexes.tex}
 
 \end{document}
