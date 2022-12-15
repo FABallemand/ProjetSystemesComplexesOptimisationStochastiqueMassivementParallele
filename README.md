@@ -2,7 +2,7 @@
 
 ## Description:
 
-Retrouver la loi universelle de la gravitation de Newton par programmation génétique à l'aide de la platefrome [EASENA](https://easea.unistra.fr/index.php/EASEA_platform) développée par l'Université de Strasbourg 🥨.
+Retrouver la loi universelle de la gravitation de Newton par programmation génétique à l'aide de la platefrome [EASEA](https://easea.unistra.fr/index.php/EASEA_platform) développée par l'Université de Strasbourg 🥨.
 
 ## Consignes de M. Collet:
 
@@ -22,7 +22,7 @@ avec:
 -La distance séparant les deux corps $d$ en mètre ($\text{m}$)  
 -$G$ la constante gravitationnelle ($G = 6,67408 \times 10^{-11} N . \text{m}^2 . \text{kg}^2$)
 
-## Implémentation EASENA
+## Implémentation EASEA
 
 ## Equipe:  
 
