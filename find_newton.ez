@@ -4,14 +4,12 @@
 ___________________________________________________________________*/
 
 \User declarations :
-#define NB_SAMP 1024 	  // nombre d'échantillons
-float sample[NB_SAMP][2]; // tableau de NB_SAMP points en 2 dimension
+float earth_weight = 5.9722 * pow(10, 24); // Masse de la Terre
+float sun_weight = 1.9884 * pow(10, 30);   // Masse du Soleil
+float G = 6,67408 * pow(10, -11);         // Constante gravitationnelle
 
-#define X_MIN 0.0
-#define X_MAX 10.0
-
-#define NB_SIN 3
-float tSin[NB_SIN][3]; // amplitude, fréquence, phase
+#define NB_SAMP 1024 	  // Nombre d'échantillons
+float sample[NB_SAMP][2]; // Tableau de NB_SAMP points en 2 dimension
 \end
 
 \User functions :
@@ -170,6 +168,6 @@ Go to ez.unistra.fr to install ez
 
 COMPILATION IN 2 PHASES
 1/ Compile with ez
-easena onemax.ez
+easena find_newton.ez
 2/ Compile all C/C++/CUDA files
 */

@@ -20,7 +20,10 @@ $F_{A/B} = F_{B/A} = G \frac{M_{A}M_{B}}{d^2}$
 avec:  
 -Les masses repectives des corps $A$ et $B$, notées $M_{A}$ et $M_{B}$, en kilogramme ($\text{kg}$)  
 -La distance séparant les deux corps $d$ en mètre ($\text{m}$)  
--$G$ la constante gravitationnelle ($G = 6,67408 \times 10^{-11} N . \text{m}^2 . \text{kg}^2$)
+-$G$ la constante gravitationnelle ($G = 6,67408 \times 10^{-11} \text{N} . \text{m}^2 . \text{kg}^2$)  
+  
+-Masse de la Terre: $5.972 \times 10^{24} \text{kg}$
+-Masse du Soleil: $1.989 \times 10^{30} \text{kg}$
 
 ## Implémentation EASEA
 
