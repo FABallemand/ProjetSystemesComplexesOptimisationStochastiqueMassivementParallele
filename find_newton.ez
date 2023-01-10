@@ -6,7 +6,7 @@ ___________________________________________________________________*/
 \User declarations :
 float earth_weight = 5.9722 * pow(10, 24); // Masse de la Terre
 float sun_weight = 1.9884 * pow(10, 30);   // Masse du Soleil
-float G = 6,67408 * pow(10, -11);         // Constante gravitationnelle
+float G = 6.67408 * pow(10, -11);          // Constante gravitationnelle
 
 #define NB_SAMP 1024 	  // Nombre d'échantillons
 float sample[NB_SAMP][2]; // Tableau de NB_SAMP points en 2 dimension
@@ -19,23 +19,11 @@ float sample[NB_SAMP][2]; // Tableau de NB_SAMP points en 2 dimension
 \end
 
 \Before everything else function :
-tSin[0][0] = 2.0;
-tSin[0][1] = 42.0;
-tSin[0][2] = 4.0;
-
-tSin[1][0] = 8.0;
-tSin[1][1] = 66.6;
-tSin[1][2] = 0.12;
-
-tSin[2][0] = 1.414;
-tSin[2][1] = 1.735;
-tSin[2][2] = 2.25;
-
 for(int i=0; i<NB_SAMP; i++)
 {
 	float x = sample[i][0] = random(X_MIN, X_MAX);
 	float y = 0.0;
-	for(int s = 0; s<NB_SIN; s++)
+	for(int s = 0; s < NB_SIN; s++)
 	{
 		y += tSin[s][0]*sin(tSin[s][1]*x+tSin[s][2]);
 	}
