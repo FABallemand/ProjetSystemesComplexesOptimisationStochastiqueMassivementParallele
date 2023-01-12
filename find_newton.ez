@@ -6,9 +6,11 @@ ___________________________________________________________________*/
 \User declarations :
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 
-static constexpr float max_init_value = pow(10, 3); //< Maximum value for random initialisation
-static constexpr float pMutPerGene = 0.5;			//< Probabilty of mutation
+static constexpr float max_init_value = 1E30; //< Maximum value for random initialisation
+static constexpr float proba_mut = 0.2;		  //< Probabilty of mutation
+static constexpr float var_mut = 0.05;        //< Taux de variation lors de la mutation
 
 // Constants
 #define NB_SAMP 1024
@@ -16,11 +18,8 @@ static constexpr float pMutPerGene = 0.5;			//< Probabilty of mutation
 #define R 0
 #define THETA 1
 
-// static constexpr float earth_mass = 5.9722 * pow(10, 24);	   //< Earth mass (kg)
-static constexpr float earth_mass = 1.0 / 332946.0487;		       //< Earth mass (solar mass)
-static constexpr float earth_perihelion_speed = 30.2 * pow(10, 3); //< Earth perihelion speed (m/s)
-static constexpr float sun_mass = 1.9884 * pow(10, 30);			   //< Sun mass (kg)
-static constexpr float g_const = 6.67408 * pow(10, -11);		   //< Gravitational constant
+static constexpr float sun_mass = 1.9884E30;			           //< Sun mass (kg)
+static constexpr float g_const = 6.67408E-11;		               //< Gravitational constant
 static constexpr float delta_t = (365.25 * 24 * 3600) / NB_SAMP;   //< Duration between two steps
 
 // Variables
@@ -37,11 +36,12 @@ static int n = 0;					   //< Current step
 \end
 
 \Before everything else function :
+srand(time(NULL)); // Initialise seed
+
 // Initial conditions
-trajectory[n][R] = 147.1 * pow(10, 9);			      // Initial position (perihelion)
+trajectory[n][R] = 147.1E9;						      // Initial position (perihelion)
 trajectory[n][THETA] = M_PI;						  // Initial position (perihelion)
 curr_speed[R] = 0;									  // Initial speed (perihelion)
-curr_speed[THETA] = earth_perihelion_speed;			  // Initial speed (perihelion)
 curr_speed[THETA] = (2 * M_PI) / (365.5 * 24 * 3600); // Initial speed (average)
 n++;												  // Next step
 
@@ -73,9 +73,7 @@ for (; n < NB_SAMP; n++)
 
 \User classes : GenomeClass
 {
-  float earth_mass_to_find;
   float sun_mass_to_find;
-  float earth_perihelion_speed_to_find;
 }
 \end
 
@@ -83,160 +81,81 @@ for (; n < NB_SAMP; n++)
 \end
 
 \GenomeClass::initialiser :
-srand(666); // Initialise seed (for reproductability)
-Genome.earth_mass_to_find = ((float)rand() / (float)(RAND_MAX)) * max_init_value;
 Genome.sun_mass_to_find = ((float)rand() / (float)(RAND_MAX)) * max_init_value;
-Genome.earth_perihelion_speed_to_find = ((float)rand() / (float)(RAND_MAX)) * max_init_value;
 
 printf("==== INITIALISER =================================================\n");
-printf("EARTH MASS: %f (init)\n", Genome.earth_mass_to_find);
 printf("SUN MASS: %f (init)\n", Genome.sun_mass_to_find);
-printf("EARTH PERIHELION SPEED: %f (init)\n", Genome.earth_perihelion_speed_to_find);
 printf("==================================================================\n");
 \end
 
-\GenomeClass::crossover :
-long unsigned int nLocus = random(1, sizeof(float) * 8);
-uint32_t child_mask = 0;
-uint32_t parent_mask = 0;
-long unsigned int i = 0;
-uint32_t tmp_1, tmp_2;
-// Earth mass
-nLocus = random(1, sizeof(float) * 8);
-child_mask = 0;
-parent_mask = 0;
-i = 0;
-for (; i < nLocus; i++)
-{
-  child_mask |= 1 << i;
-}
-for (; i < sizeof(float) * 8; i++)
-{
-  parent_mask |= 1 << i;
-}
-printf("EARTH MASS: %f (before X-over)\n", child.earth_mass_to_find);
-std::memcpy(&tmp_1, &child.earth_mass_to_find, sizeof(float));
-std::memcpy(&tmp_2, &parent1.earth_mass_to_find, sizeof(float));
-tmp_1 = (tmp_1 & child_mask) | (tmp_2 & parent_mask);
-std::memcpy(&child.earth_mass_to_find, &tmp_1, sizeof(float));
-printf("EARTH MASS: %f (after X-over)\n", child.earth_mass_to_find);
-// Sun mass
-nLocus = random(1, sizeof(float) * 8);
-child_mask = 0;
-parent_mask = 0;
-i = 0;
-for (; i < nLocus; i++)
-{
-  child_mask |= 1 << i;
-}
-for (; i < sizeof(float) * 8; i++)
-{
-  parent_mask |= 1 << i;
-}
-std::memcpy(&tmp_1, &child.sun_mass_to_find, sizeof(float));
-std::memcpy(&tmp_2, &parent1.sun_mass_to_find, sizeof(float));
-tmp_1 = (tmp_1 & child_mask) | (tmp_2 & parent_mask);
-std::memcpy(&child.sun_mass_to_find, &tmp_1, sizeof(float));
-// Earth perihelion speed
-nLocus = random(1, sizeof(float) * 8);
-child_mask = 0;
-parent_mask = 0;
-i = 0;
-for (; i < nLocus; i++)
-{
-  child_mask |= 1 << i;
-}
-for (; i < sizeof(float) * 8; i++)
-{
-  parent_mask |= 1 << i;
-}
-std::memcpy(&tmp_1, &child.earth_perihelion_speed_to_find, sizeof(float));
-std::memcpy(&tmp_2, &parent1.earth_perihelion_speed_to_find, sizeof(float));
-tmp_1 = (tmp_1 & child_mask) | (tmp_2 & parent_mask);
-std::memcpy(&child.earth_perihelion_speed_to_find, &tmp_1, sizeof(float));
+\GenomeClass::crossover : // by default when entering the function child is a clone of parent1
+	child.sun_mass_to_find = (child.sun_mass_to_find + parent2.sun_mass_to_find) / 2;
 \end
 
 \GenomeClass::mutator :
-uint32_t tmp_1;
-// Earth mass
-printf("EARTH MASS: %f (before mutation)\n", Genome.earth_mass_to_find);
-std::memcpy(&tmp_1, &Genome.earth_mass_to_find, sizeof(float));
-for (long unsigned int i = 0; i < sizeof(float) * 8; i++)
+if (tossCoin(proba_mut))
 {
-	if (tossCoin(pMutPerGene))
-	{
-		uint32_t mask = 1 << i;
-		if((tmp_1 & mask) == 0)
-		{
-			tmp_1 = tmp_1 & mask;
-		}
-		else
-		{
-			tmp_1 = tmp_1 | mask;
-		}
-	}
+  if (tossCoin(0.5))
+  {
+	  Genome.sun_mass_to_find *= var_mut;
+  }
+  else
+  {
+	  Genome.sun_mass_to_find *= -var_mut;
+  }
 }
-std::memcpy(&Genome.earth_mass_to_find, &tmp_1, sizeof(float));
-printf("EARTH MASS: %f (after mutation)\n", Genome.earth_mass_to_find);
-// Sun mass
-std::memcpy(&tmp_1, &Genome.sun_mass_to_find, sizeof(float));
-for (long unsigned int i = 0; i < sizeof(float) * 8; i++)
-{
-	if (tossCoin(pMutPerGene))
-	{
-		uint32_t mask = 1 << i;
-		if((tmp_1 & mask) == 0)
-		{
-			tmp_1 = tmp_1 & mask;
-		}
-		else
-		{
-			tmp_1 = tmp_1 | mask;
-		}
-	}
-}
-std::memcpy(&Genome.sun_mass_to_find, &tmp_1, sizeof(float));
-// Earth perihelion speed
-std::memcpy(&tmp_1, &Genome.earth_perihelion_speed_to_find, sizeof(float));
-for (long unsigned int i = 0; i < sizeof(float) * 8; i++)
-{
-	if (tossCoin(pMutPerGene))
-	{
-		uint32_t mask = 1 << i;
-		if((tmp_1 & mask) == 0)
-		{
-			tmp_1 = tmp_1 & mask;
-		}
-		else
-		{
-			tmp_1 = tmp_1 | mask;
-		}
-	}
-}
-std::memcpy(&Genome.earth_perihelion_speed_to_find, &tmp_1, sizeof(float));
 \end
 
-\GenomeClass::evaluator : // Higher is better
-float delta_earth_mass = (earth_mass - Genome.earth_mass_to_find) * (earth_mass - Genome.earth_mass_to_find);
-float delta_sun_mass = (1.0 - Genome.sun_mass_to_find) * (1.0 - Genome.sun_mass_to_find); // Sun mass = 1 (sun mass)
-float delta_earth_perihelion_speed = (earth_perihelion_speed - Genome.earth_perihelion_speed_to_find) * (earth_perihelion_speed - Genome.earth_perihelion_speed_to_find);
-float fScore = 1.0 / (delta_earth_mass + delta_sun_mass + delta_earth_perihelion_speed);
+\GenomeClass::evaluator : // Lower is better
+// Variables
+float trajectory_estimated[NB_SAMP][DIM]; //< Earth trajectory around Sun (polar coord.)
+float prev_speed_estimated[DIM];		  //< Speed at previous step (polar coord.)
+float curr_speed_estimated[DIM];		  //< Speed at current step (polar coord.)
+int n_estimated = 0;					  //< Current step
 
-printf("EARTH MASS: %f (real), %f (estimated) [LSE = %f]\n", earth_mass, Genome.earth_mass_to_find, delta_earth_mass);
-printf("SUN MASS: %f (real), %f (estimated) [LSE = %f]\n", 1.0, Genome.sun_mass_to_find, delta_sun_mass);
-printf("EARTH PERIHELION SPEED: %f (real), %f (estimated) [LSE = %f]\n", earth_perihelion_speed, Genome.earth_perihelion_speed_to_find, delta_earth_perihelion_speed);
-printf("fScore = %f\n", fScore);
+// Initial conditions
+trajectory_estimated[n_estimated][R] = 147.1E9;				   // Initial position (perihelion)
+trajectory_estimated[n_estimated][THETA] = M_PI;				   // Initial position (perihelion)
+curr_speed_estimated[R] = 0;									   // Initial speed (perihelion)
+curr_speed_estimated[THETA] = (2 * M_PI) / (365.5 * 24 * 3600); // Initial speed (average)
+n_estimated++;												   // Next step
+
+// Compute trajectory
+for (; n_estimated < NB_SAMP; n_estimated++)
+{
+  prev_speed_estimated[R] = curr_speed_estimated[R];
+  prev_speed_estimated[THETA] = curr_speed_estimated[THETA];
+
+  curr_speed_estimated[R] = prev_speed_estimated[R] + (trajectory_estimated[n_estimated - 1][R] * prev_speed_estimated[THETA] * prev_speed_estimated[THETA] - ((g_const * sun_mass) / (trajectory_estimated[n_estimated - 1][R] * trajectory_estimated[n_estimated - 1][R]))) * delta_t;
+  curr_speed_estimated[THETA] = prev_speed_estimated[THETA] + ((-2 * prev_speed_estimated[R] * prev_speed_estimated[THETA]) / trajectory_estimated[n_estimated - 1][R]) * delta_t;
+
+  trajectory_estimated[n_estimated][R] = trajectory_estimated[n_estimated - 1][R] + curr_speed_estimated[R] * delta_t;
+  trajectory_estimated[n_estimated][THETA] = trajectory_estimated[n_estimated - 1][THETA] + curr_speed_estimated[THETA] * delta_t;
+}
+
+float score = 0.0;
+for (int i = 0; i < NB_SAMP; i++)
+{
+	float x = trajectory[R][i] * cos(trajectory[THETA][i]);
+	float y = trajectory[R][i] * sin(trajectory[THETA][i]);
+	float x_estimated = trajectory_estimated[R][i] * cos(trajectory_estimated[THETA][i]);
+	float y_estimated = trajectory_estimated[R][i] * sin(trajectory_estimated[THETA][i]);
+	score += (x - x_estimated)*(x - x_estimated) + (y - y_estimated)*(y - y_estimated);
+}
+
+printf("SUN MASS: %f (real), %f (estimated) [LSE = %f]\n", sun_mass, Genome.sun_mass_to_find, score);
+printf("fScore = %f\n", score);
 printf("==================================================================\n");
-return fScore;
+return score;
 \end
 
 \User Makefile options :
 \end
 
 \Default run parameters :
-	Number of generations : 5  			    // NB_GEN
+	Number of generations : 100			    // NB_GEN
 	Time limit : 0              			// In seconds, 0 to deactivate
-	Population size : 10    	 			// POP_SIZE
+	Population size : 100    	 			// POP_SIZE
 	Offspring size : 100        			// (percentage or absolute) 40% of the population size or 40
 	Crossover probability : 1   			// XOVER_PROB (0.8 -> 20% of children are just clones of parent)
 	Mutation probability : 1    			// MUT_PROB (???)
