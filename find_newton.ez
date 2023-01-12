@@ -4,12 +4,30 @@
 ___________________________________________________________________*/
 
 \User declarations :
-float earth_weight = 5.9722 * pow(10, 24); // Masse de la Terre
-float sun_weight = 1.9884 * pow(10, 30);   // Masse du Soleil
-float G = 6.67408 * pow(10, -11);          // Constante gravitationnelle
+#include <stdlib.h>
+#include <math.h>
 
-#define NB_SAMP 1024 	  // Nombre d'échantillons
-float sample[NB_SAMP][2]; // Tableau de NB_SAMP points en 2 dimension
+static constexpr float max_init_value = pow(10, 3); //< Maximum value for random initialisation
+static constexpr float pMutPerGene = 0.5;			//< Probabilty of mutation
+
+// Constants
+#define NB_SAMP 1024
+#define DIM 2
+#define R 0
+#define THETA 1
+
+// static constexpr float earth_mass = 5.9722 * pow(10, 24);	   //< Earth mass (kg)
+static constexpr float earth_mass = 1.0 / 332946.0487;		       //< Earth mass (solar mass)
+static constexpr float earth_perihelion_speed = 30.2 * pow(10, 3); //< Earth perihelion speed (m/s)
+static constexpr float sun_mass = 1.9884 * pow(10, 30);			   //< Sun mass (kg)
+static constexpr float g_const = 6.67408 * pow(10, -11);		   //< Gravitational constant
+static constexpr float delta_t = (365.25 * 24 * 3600) / NB_SAMP;   //< Duration between two steps
+
+// Variables
+static float trajectory[NB_SAMP][DIM]; //< Earth trajectory around Sun (polar coord.)
+static float prev_speed[DIM];		   //< Speed at previous step (polar coord.)
+static float curr_speed[DIM];		   //< Speed at current step (polar coord.)
+static int n = 0;					   //< Current step
 \end
 
 \User functions :
@@ -19,32 +37,29 @@ float sample[NB_SAMP][2]; // Tableau de NB_SAMP points en 2 dimension
 \end
 
 \Before everything else function :
-for(int i=0; i<NB_SAMP; i++)
+// Initial conditions
+trajectory[n][R] = 147.1 * pow(10, 9);			      // Initial position (perihelion)
+trajectory[n][THETA] = M_PI;						  // Initial position (perihelion)
+curr_speed[R] = 0;									  // Initial speed (perihelion)
+curr_speed[THETA] = earth_perihelion_speed;			  // Initial speed (perihelion)
+curr_speed[THETA] = (2 * M_PI) / (365.5 * 24 * 3600); // Initial speed (average)
+n++;												  // Next step
+
+// Compute trajectory
+for (; n < NB_SAMP; n++)
 {
-	float x = sample[i][0] = random(X_MIN, X_MAX);
-	float y = 0.0;
-	for(int s = 0; s < NB_SIN; s++)
-	{
-		y += tSin[s][0]*sin(tSin[s][1]*x+tSin[s][2]);
-	}
-	sample[i][1] = y;
+	prev_speed[R] = curr_speed[R];
+	prev_speed[THETA] = curr_speed[THETA];
+
+	curr_speed[R] = prev_speed[R] + (trajectory[n - 1][R] * prev_speed[THETA] * prev_speed[THETA] - ((g_const * sun_mass) / (trajectory[n - 1][R] * trajectory[n - 1][R]))) * delta_t;
+	curr_speed[THETA] = prev_speed[THETA] + ((-2 * prev_speed[R] * prev_speed[THETA]) / trajectory[n - 1][R]) * delta_t;
+
+	trajectory[n][R] = trajectory[n - 1][R] + curr_speed[R] * delta_t;
+	trajectory[n][THETA] = trajectory[n - 1][THETA] + curr_speed[THETA] * delta_t;
 }
 \end
 
 \After everything else function :
-printf("Fonction à retrouver: y = ");
-for(int s=0; s<NB_SIN; s++)
-{
-	printf("%f*sin(%f*x+%f)+", tSin[s][0], tSin[s][1], tSin[s][2]);
-}
-printf("\b \n"); // supprimer le dernier +
-
-printf("Fonction trouvée: y = ");
-for(int s=0; s<NB_SIN; s++)
-{
-	printf("%f*sin(%f*x+%f)+", bBest->sinus[s*3+0], bBest->sinus[s*3+1], bBest->sinus[s*3+2]);
-}
-printf("\b \n"); // supprimer le dernier +
 \end
 
 \At the beginning of each generation function :
@@ -58,7 +73,9 @@ printf("\b \n"); // supprimer le dernier +
 
 \User classes : GenomeClass
 {
-  float sinus[NB_SIN*3]; // amplitude = sinus[i*3+0], ...
+  float earth_mass_to_find;
+  float sun_mass_to_find;
+  float earth_perihelion_speed_to_find;
 }
 \end
 
@@ -66,63 +83,160 @@ printf("\b \n"); // supprimer le dernier +
 \end
 
 \GenomeClass::initialiser :
-for(int s=0; s<NB_SIN; s++)
-{
-	Genome.sinus[s*3+0] = random(0.0, 10.0); // Amplitude
-	Genome.sinus[s*3+1] = random(0.0, 100.0); // Fréquence
-	Genome.sinus[s*3+2] = random(0.0, 6.28); // Phase [0,2*pi]
-}
+srand(666); // Initialise seed (for reproductability)
+Genome.earth_mass_to_find = ((float)rand() / (float)(RAND_MAX)) * max_init_value;
+Genome.sun_mass_to_find = ((float)rand() / (float)(RAND_MAX)) * max_init_value;
+Genome.earth_perihelion_speed_to_find = ((float)rand() / (float)(RAND_MAX)) * max_init_value;
+
+printf("==== INITIALISER =================================================\n");
+printf("EARTH MASS: %f (init)\n", Genome.earth_mass_to_find);
+printf("SUN MASS: %f (init)\n", Genome.sun_mass_to_find);
+printf("EARTH PERIHELION SPEED: %f (init)\n", Genome.earth_perihelion_speed_to_find);
+printf("==================================================================\n");
 \end
 
 \GenomeClass::crossover :
-int nLocus = random(1, NB_SIN*3); // prend une valeur dans [1,8]
-
-for (int i = nLocus; i < NB_SIN*3; i++)
+long unsigned int nLocus = random(1, sizeof(float) * 8);
+uint32_t child_mask = 0;
+uint32_t parent_mask = 0;
+long unsigned int i = 0;
+uint32_t tmp_1, tmp_2;
+// Earth mass
+nLocus = random(1, sizeof(float) * 8);
+child_mask = 0;
+parent_mask = 0;
+i = 0;
+for (; i < nLocus; i++)
 {
-	child.sinus[i] = parent2.sinus[i];
+  child_mask |= 1 << i;
 }
+for (; i < sizeof(float) * 8; i++)
+{
+  parent_mask |= 1 << i;
+}
+printf("EARTH MASS: %f (before X-over)\n", child.earth_mass_to_find);
+std::memcpy(&tmp_1, &child.earth_mass_to_find, sizeof(float));
+std::memcpy(&tmp_2, &parent1.earth_mass_to_find, sizeof(float));
+tmp_1 = (tmp_1 & child_mask) | (tmp_2 & parent_mask);
+std::memcpy(&child.earth_mass_to_find, &tmp_1, sizeof(float));
+printf("EARTH MASS: %f (after X-over)\n", child.earth_mass_to_find);
+// Sun mass
+nLocus = random(1, sizeof(float) * 8);
+child_mask = 0;
+parent_mask = 0;
+i = 0;
+for (; i < nLocus; i++)
+{
+  child_mask |= 1 << i;
+}
+for (; i < sizeof(float) * 8; i++)
+{
+  parent_mask |= 1 << i;
+}
+std::memcpy(&tmp_1, &child.sun_mass_to_find, sizeof(float));
+std::memcpy(&tmp_2, &parent1.sun_mass_to_find, sizeof(float));
+tmp_1 = (tmp_1 & child_mask) | (tmp_2 & parent_mask);
+std::memcpy(&child.sun_mass_to_find, &tmp_1, sizeof(float));
+// Earth perihelion speed
+nLocus = random(1, sizeof(float) * 8);
+child_mask = 0;
+parent_mask = 0;
+i = 0;
+for (; i < nLocus; i++)
+{
+  child_mask |= 1 << i;
+}
+for (; i < sizeof(float) * 8; i++)
+{
+  parent_mask |= 1 << i;
+}
+std::memcpy(&tmp_1, &child.earth_perihelion_speed_to_find, sizeof(float));
+std::memcpy(&tmp_2, &parent1.earth_perihelion_speed_to_find, sizeof(float));
+tmp_1 = (tmp_1 & child_mask) | (tmp_2 & parent_mask);
+std::memcpy(&child.earth_perihelion_speed_to_find, &tmp_1, sizeof(float));
 \end
 
 \GenomeClass::mutator :
-float fProb = random(0.0, 1.0/(NB_SIN*3)); // 1/nb_gènes pour commencer
-for(int s=0; s<NB_SIN; s++)
+uint32_t tmp_1;
+// Earth mass
+printf("EARTH MASS: %f (before mutation)\n", Genome.earth_mass_to_find);
+std::memcpy(&tmp_1, &Genome.earth_mass_to_find, sizeof(float));
+for (long unsigned int i = 0; i < sizeof(float) * 8; i++)
 {
-	if(tossCoin(fProb))
+	if (tossCoin(pMutPerGene))
 	{
-		Genome.sinus[s*3+0] += random(0.0, 1.0) - 0.5; // + [-0.5, 0.5]
-	}
-	if(tossCoin(fProb))
-	{
-		Genome.sinus[s*3+1] += random(0.0, 10.0) - 5.0; // + [-5.0, 5.0]
-	}
-	if(tossCoin(fProb))
-	{
-		Genome.sinus[s*3+2] += random(0.0, 0.6) - 0.3; // + [-0.3, 0.3]
+		uint32_t mask = 1 << i;
+		if((tmp_1 & mask) == 0)
+		{
+			tmp_1 = tmp_1 & mask;
+		}
+		else
+		{
+			tmp_1 = tmp_1 | mask;
+		}
 	}
 }
+std::memcpy(&Genome.earth_mass_to_find, &tmp_1, sizeof(float));
+printf("EARTH MASS: %f (after mutation)\n", Genome.earth_mass_to_find);
+// Sun mass
+std::memcpy(&tmp_1, &Genome.sun_mass_to_find, sizeof(float));
+for (long unsigned int i = 0; i < sizeof(float) * 8; i++)
+{
+	if (tossCoin(pMutPerGene))
+	{
+		uint32_t mask = 1 << i;
+		if((tmp_1 & mask) == 0)
+		{
+			tmp_1 = tmp_1 & mask;
+		}
+		else
+		{
+			tmp_1 = tmp_1 | mask;
+		}
+	}
+}
+std::memcpy(&Genome.sun_mass_to_find, &tmp_1, sizeof(float));
+// Earth perihelion speed
+std::memcpy(&tmp_1, &Genome.earth_perihelion_speed_to_find, sizeof(float));
+for (long unsigned int i = 0; i < sizeof(float) * 8; i++)
+{
+	if (tossCoin(pMutPerGene))
+	{
+		uint32_t mask = 1 << i;
+		if((tmp_1 & mask) == 0)
+		{
+			tmp_1 = tmp_1 & mask;
+		}
+		else
+		{
+			tmp_1 = tmp_1 | mask;
+		}
+	}
+}
+std::memcpy(&Genome.earth_perihelion_speed_to_find, &tmp_1, sizeof(float));
 \end
 
-\GenomeClass::evaluator : // intégrale entre les signaux!!
-float fScore = 0.0;
-for(int i=0; i<NB_SAMP; i++)
-{
-	float x = sample[i][0];
-	float y = 0.0;
-	for(int s = 0; s<NB_SIN; s++)
-	{
-		y += Genome.sinus[s*3+0]*sin(Genome.sinus[s*3+1]*x+Genome.sinus[s*3+2]);
-	}
-	fScore += abs(sample[i][1]-y);
-}
+\GenomeClass::evaluator : // Higher is better
+float delta_earth_mass = (earth_mass - Genome.earth_mass_to_find) * (earth_mass - Genome.earth_mass_to_find);
+float delta_sun_mass = (1.0 - Genome.sun_mass_to_find) * (1.0 - Genome.sun_mass_to_find); // Sun mass = 1 (sun mass)
+float delta_earth_perihelion_speed = (earth_perihelion_speed - Genome.earth_perihelion_speed_to_find) * (earth_perihelion_speed - Genome.earth_perihelion_speed_to_find);
+float fScore = 1.0 / (delta_earth_mass + delta_sun_mass + delta_earth_perihelion_speed);
+
+printf("EARTH MASS: %f (real), %f (estimated) [LSE = %f]\n", earth_mass, Genome.earth_mass_to_find, delta_earth_mass);
+printf("SUN MASS: %f (real), %f (estimated) [LSE = %f]\n", 1.0, Genome.sun_mass_to_find, delta_sun_mass);
+printf("EARTH PERIHELION SPEED: %f (real), %f (estimated) [LSE = %f]\n", earth_perihelion_speed, Genome.earth_perihelion_speed_to_find, delta_earth_perihelion_speed);
+printf("fScore = %f\n", fScore);
+printf("==================================================================\n");
+return fScore;
 \end
 
 \User Makefile options :
 \end
 
 \Default run parameters :
-	Number of generations : 100  			// NB_GEN
+	Number of generations : 5  			    // NB_GEN
 	Time limit : 0              			// In seconds, 0 to deactivate
-	Population size : 10000    	 			// POP_SIZE
+	Population size : 10    	 			// POP_SIZE
 	Offspring size : 100        			// (percentage or absolute) 40% of the population size or 40
 	Crossover probability : 1   			// XOVER_PROB (0.8 -> 20% of children are just clones of parent)
 	Mutation probability : 1    			// MUT_PROB (???)
@@ -152,10 +266,14 @@ for(int i=0; i<NB_SAMP; i++)
 \end
 
 /*
-Go to ez.unistra.fr to install ez
+//======================//
+// HOW TO RUN THIS FILE //
+//======================//
 
-COMPILATION IN 2 PHASES
-1/ Compile with ez
-easena find_newton.ez
-2/ Compile all C/C++/CUDA files
+1/ Go to https://easea.unistra.fr/index.php/Installing_EASEA and install easea
+
+2/ Compile with easena: easena find_newton.ez
+
+3/ Compile all C/C++/CUDA files: make
+
 */
