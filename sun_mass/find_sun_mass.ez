@@ -10,11 +10,13 @@ ___________________________________________________________________*/
 #include <time.h>
 #include <float.h>
 
+static int test = 0; //< Fix trajectory_1 not detected...LOOOOOOOOOOL
+
 // Output files
-static FILE*output_file_1 = fopen("output_file_1.txt", "w");
-static FILE*output_file_2 = fopen("output_file_2.txt", "w");
-static FILE*output_file_3 = fopen("output_file_3.txt", "w");
-static FILE*output_file_4 = fopen("output_file_4.txt", "w");
+static FILE*trajectory_1 = fopen("trajectory_1.txt", "w");
+static FILE*trajectory_2 = fopen("trajectory_2.txt", "w");
+static FILE*trajectory_3 = fopen("trajectory_3.txt", "w");
+static FILE*trajectory_4 = fopen("trajectory_4.txt", "w");
 
 //
 static constexpr double max_init_value = 1.0E31; //< Maximum value for random initialisation
@@ -79,13 +81,10 @@ for (; n < NB_SAMP; n++)
 \end
 
 \After everything else function :
-for (int i = 0; i < 4; i++)
-{
-	fclose(output_file_1);
-	fclose(output_file_2);
-	fclose(output_file_3);
-	fclose(output_file_4);
-}
+fclose(trajectory_1);
+fclose(trajectory_2);
+fclose(trajectory_3);
+fclose(trajectory_4);
 \end
 
 \At the beginning of each generation function :
@@ -95,50 +94,50 @@ for (int i = 0; i < 4; i++)
 \end
 
 \At the end of each generation function :
-if(currentGeneration == 0 || currentGeneration == 20 || currentGeneration == 40 || currentGeneration == 59)
+if (currentGeneration == 0 || currentGeneration == 20 || currentGeneration == 40 || currentGeneration == 59)
 {
 	n_estimated = 0;
 
 	// Initial conditions
-	trajectory_estimated[n_estimated][R] = 147.1E9;					// Initial position (perihelion)
-	trajectory_estimated[n_estimated][THETA] = M_PI;				// Initial position (perihelion)
-	curr_speed_estimated[R] = 0;									// Initial speed (perihelion)
-	curr_speed_estimated[THETA] = perihelion_speed;					// Initial speed (average)
-	n_estimated++;													// Next step
+	trajectory_estimated[n_estimated][R] = 147.1E9;	 // Initial position (perihelion)
+	trajectory_estimated[n_estimated][THETA] = M_PI; // Initial position (perihelion)
+	curr_speed_estimated[R] = 0;					 // Initial speed (perihelion)
+	curr_speed_estimated[THETA] = perihelion_speed;	 // Initial speed (average)
+	n_estimated++;									 // Next step
 
 	// Compute trajectory
 	for (; n_estimated < NB_SAMP; n_estimated++)
 	{
-	prev_speed_estimated[R] = curr_speed_estimated[R];
-	prev_speed_estimated[THETA] = curr_speed_estimated[THETA];
+		prev_speed_estimated[R] = curr_speed_estimated[R];
+		prev_speed_estimated[THETA] = curr_speed_estimated[THETA];
 
-	curr_speed_estimated[R] = prev_speed_estimated[R] + (trajectory_estimated[n_estimated - 1][R] * prev_speed_estimated[THETA] * prev_speed_estimated[THETA] - ((g_const * bBest->sun_mass_to_find) / (trajectory_estimated[n_estimated - 1][R] * trajectory_estimated[n_estimated - 1][R]))) * delta_t;
-	curr_speed_estimated[THETA] = prev_speed_estimated[THETA] + ((-2 * prev_speed_estimated[R] * prev_speed_estimated[THETA]) / trajectory_estimated[n_estimated - 1][R]) * delta_t;
+		curr_speed_estimated[R] = prev_speed_estimated[R] + (trajectory_estimated[n_estimated - 1][R] * prev_speed_estimated[THETA] * prev_speed_estimated[THETA] - ((g_const * bBest->sun_mass_to_find) / (trajectory_estimated[n_estimated - 1][R] * trajectory_estimated[n_estimated - 1][R]))) * delta_t;
+		curr_speed_estimated[THETA] = prev_speed_estimated[THETA] + ((-2 * prev_speed_estimated[R] * prev_speed_estimated[THETA]) / trajectory_estimated[n_estimated - 1][R]) * delta_t;
 
-	trajectory_estimated[n_estimated][R] = trajectory_estimated[n_estimated - 1][R] + curr_speed_estimated[R] * delta_t;
-	trajectory_estimated[n_estimated][THETA] = trajectory_estimated[n_estimated - 1][THETA] + curr_speed_estimated[THETA] * delta_t;
+		trajectory_estimated[n_estimated][R] = trajectory_estimated[n_estimated - 1][R] + curr_speed_estimated[R] * delta_t;
+		trajectory_estimated[n_estimated][THETA] = trajectory_estimated[n_estimated - 1][THETA] + curr_speed_estimated[THETA] * delta_t;
 	}
 
 	FILE *output_file = NULL;
 	switch (currentGeneration)
 	{
 	case 0:
-	output_file = output_file_1;
-	break;
+		output_file = trajectory_1;
+		break;
 	case 20:
-	output_file = output_file_2;
-	break;
+		output_file = trajectory_2;
+		break;
 	case 40:
-	output_file = output_file_3;
-	break;
+		output_file = trajectory_3;
+		break;
 	case 59:
-	output_file = output_file_4;
-	break;
+		output_file = trajectory_4;
+		break;
 	default:
-		printf("ALED\n");
+		printf("Error\n");
 		exit(1);
 	}
-	for(int i = 0; i<NB_SAMP; i++)
+	for (int i = 0; i < NB_SAMP; i++)
 	{
 		fprintf(output_file, "%f,%f\n", trajectory_estimated[i][R], trajectory_estimated[i][THETA]);
 	}
