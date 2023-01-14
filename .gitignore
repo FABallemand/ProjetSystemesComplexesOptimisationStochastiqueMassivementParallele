@@ -2,10 +2,13 @@
 *.log
 *.dat
 *.prm
+*.plot
 
 *.hpp
 *.cpp
 *.o
+*.prm
+*.mak
 
 *.aux
 *.blg
