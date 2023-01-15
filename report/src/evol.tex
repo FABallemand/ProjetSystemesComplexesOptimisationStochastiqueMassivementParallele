@@ -25,6 +25,16 @@ We settled for weak elitism, a form of elitism that ensures the best individual 
     \caption{Earth trajectories depending of the mass of Sun}
 \end{wrapfigure}
 
+\begin{table}[H]
+    \begin{tabular}{lllll}
+    Number of generations & 60 \\
+    Population size & 100 \\
+    Offspring size & 100\% \\
+    Mutation probability & 0.2 \\
+    Mutation variation rate & 0.05
+    \end{tabular}
+    \caption{Parameters used to find the mass of Sun}
+\end{table}
 
 \subsection{Mass of Earth}
 We did not managed to find Earth's mass using evolutionnary algorithm as this quantity does not appear in the equations defining Earth's trajectory around Sun. Nonetheless, we have a couple ideas regarding how we could achieve this.\\
@@ -40,3 +50,14 @@ Another way to get to that result would be to study those two celestial bodies i
 \end{wrapfigure}
 
 In order to find the speed of planet Earth at the perihelion we apply the same steps as before: initialisation, crossover, mutation and evaluation. Unless this time we have to change a couples of values. As the speed of Earth in radian per second is so little, it is not well handled by our program (ie: assimilated to zero). To combat that, we simply consider the speed in radian per day leading to values that can properly be handled by computers. This implies also converting the gravitationnal constant and our sampling step to fit the new unit scale.
+
+\begin{table}
+    \begin{tabular}{lllll}
+    Number of generations & 100 \\
+    Population size & 150 \\
+    Offspring size & 100\% \\
+    Mutation probability & 0.2 \\
+    Mutation variation rate & 0.05
+    \end{tabular}
+    \caption{Parameters used to find the speed of Earth at the perihelion}
+\end{table}

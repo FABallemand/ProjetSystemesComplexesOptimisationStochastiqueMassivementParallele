@@ -248,7 +248,7 @@ return score;
 
 	Elitism : Weak // Weak (keep the "elite" best PARENTS+CHILDREN into the next generation) or Strong (keep the "elite" best PARENTS)
 	Elite : 1 
-	Print stats : true // Sho evolution, Default: true
+	Print stats : true // Show evolution, Default: true
 	Generate csv stats file : false
 	Generate gnuplot script : false
 	Generate R script : false
