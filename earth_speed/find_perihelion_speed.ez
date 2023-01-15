@@ -1,7 +1,7 @@
-/*___________________________________________________________________
+/*______________________________________________________________
 
-	find_newton.ez // Loi de la Gravitation Universelle de Newton
-___________________________________________________________________*/
+	find_perihelion_speed.ez // Speed of Earth at Perihelion
+______________________________________________________________*/
 
 \User declarations :
 #include <stdio.h>
@@ -10,13 +10,15 @@ ___________________________________________________________________*/
 #include <time.h>
 #include <float.h>
 
-static constexpr double a = 1521.0E8;
-static constexpr double b = 1471.0E8;
-static constexpr double p = M_PI * (3 * (a + b) - sqrt((3 * a + b) * (a + 3 * b)));
-static constexpr double perihelion_speed = (2 * M_PI * 30.2E3 * 24.0 * 3600.0) / p; //< Perihelion speed of Earth (rad/day)
-static constexpr double max_init_value = 1.0E31;					//< Maximum value for random initialisation
-static constexpr double proba_mut = 0.2;							//< Probabilty of mutation
-static constexpr double var_mut = 0.05;								//< Taux de variation lors de la mutation
+// Output files
+static FILE*trajectory_1 = fopen("trajectory_1.txt", "w");
+static FILE*trajectory_2 = fopen("trajectory_2.txt", "w");
+static FILE*trajectory_3 = fopen("trajectory_3.txt", "w");
+static FILE*trajectory_4 = fopen("trajectory_4.txt", "w");
+
+// Evolution parameters
+static constexpr double proba_mut = 0.2; //< Probabilty of mutation
+static constexpr double var_mut = 0.05;	 //< Mutation variation rate
 
 // Constants
 #define NB_SAMP 1024
@@ -24,15 +26,25 @@ static constexpr double var_mut = 0.05;								//< Taux de variation lors de la 
 #define R 0
 #define THETA 1
 
-static constexpr double sun_mass = 1.9884E30;			           //< Sun mass (kg)
-static constexpr double g_const = 6.67408E-11;		               //< Gravitational constant
-static constexpr double delta_t = 365.25 / NB_SAMP;   //< Duration between two steps
+static constexpr double a = 152.1E9;												 //< Aphelion distance
+static constexpr double b = 147.1E9;												 //< Perihelion distance
+static constexpr double p = M_PI * (3 * (a + b) - sqrt((3 * a + b) * (a + 3 * b)));	 //< Perimeter of the ellipse
+static constexpr double perihelion_speed = (2 * M_PI * 30.2E3 * 24 * 3600) / p;		 //< Perihelion speed of Earth (rad/day)
+static constexpr double sun_mass = 1.9884E30;										 //< Sun mass (kg)
+static constexpr double g_const = 6.67408E-11 * ((24.0 * 3600.0) * (24.0 * 3600.0)); //< Gravitational constant
+static constexpr double delta_t = 365.25 / NB_SAMP;									 //< Duration between two steps
 
 // Variables
 static double trajectory[NB_SAMP][DIM]; //< Earth trajectory around Sun (polar coord.)
 static double prev_speed[DIM];			//< Speed at previous step (polar coord.)
 static double curr_speed[DIM];			//< Speed at current step (polar coord.)
 static int n = 0;						//< Current step
+
+// Estimated variables
+static double trajectory_estimated[NB_SAMP][DIM]; //< Earth trajectory around Sun (polar coord.)
+static double prev_speed_estimated[DIM];		  //< Speed at previous step (polar coord.)
+static double curr_speed_estimated[DIM];		  //< Speed at current step (polar coord.)
+static int n_estimated = 0;						  //< Current step
 \end
 
 \User functions :
@@ -45,11 +57,12 @@ static int n = 0;						//< Current step
 srand(time(NULL)); // Initialise seed
 
 // Initial conditions
-trajectory[n][R] = 147.1E9;						      // Initial position (perihelion)
-trajectory[n][THETA] = M_PI;						  // Initial position (perihelion)
-curr_speed[R] = 0;									  // Initial speed (perihelion)
-curr_speed[THETA] = perihelion_speed;				  // Initial speed (perihelion)
-n++;											  	  // Next step
+trajectory[n][R] = 147.1E9;			  // Initial position (perihelion)
+trajectory[n][THETA] = M_PI;		  // Initial position (perihelion)
+curr_speed[R] = 0;					  // Initial speed (perihelion)
+curr_speed[THETA] = perihelion_speed; // Initial speed (perihelion)
+n++;								  // Next step
+
 // Compute trajectory
 for (; n < NB_SAMP; n++)
 {
@@ -65,6 +78,11 @@ for (; n < NB_SAMP; n++)
 \end
 
 \After everything else function :
+// Close output files
+fclose(trajectory_1);
+fclose(trajectory_2);
+fclose(trajectory_3);
+fclose(trajectory_4);
 \end
 
 \At the beginning of each generation function :
@@ -74,6 +92,54 @@ for (; n < NB_SAMP; n++)
 \end
 
 \At the end of each generation function :
+if (currentGeneration == 0 || currentGeneration == 25 || currentGeneration == 75 || currentGeneration == 99)
+{
+	n_estimated = 0;
+
+	// Initial conditions
+	trajectory_estimated[n_estimated][R] = 147.1E9;				   // Initial position (perihelion)
+	trajectory_estimated[n_estimated][THETA] = M_PI;			   // Initial position (perihelion)
+	curr_speed_estimated[R] = 0;								   // Initial speed (perihelion)
+	curr_speed_estimated[THETA] = bBest->perihelion_speed_to_find; // Initial speed (average)
+	n_estimated++;												   // Next step
+
+	// Compute trajectory
+	for (; n_estimated < NB_SAMP; n_estimated++)
+	{
+		prev_speed_estimated[R] = curr_speed_estimated[R];
+		prev_speed_estimated[THETA] = curr_speed_estimated[THETA];
+
+		curr_speed_estimated[R] = prev_speed_estimated[R] + (trajectory_estimated[n_estimated - 1][R] * prev_speed_estimated[THETA] * prev_speed_estimated[THETA] - ((g_const * sun_mass) / (trajectory_estimated[n_estimated - 1][R] * trajectory_estimated[n_estimated - 1][R]))) * delta_t;
+		curr_speed_estimated[THETA] = prev_speed_estimated[THETA] + ((-2 * prev_speed_estimated[R] * prev_speed_estimated[THETA]) / trajectory_estimated[n_estimated - 1][R]) * delta_t;
+
+		trajectory_estimated[n_estimated][R] = trajectory_estimated[n_estimated - 1][R] + curr_speed_estimated[R] * delta_t;
+		trajectory_estimated[n_estimated][THETA] = trajectory_estimated[n_estimated - 1][THETA] + curr_speed_estimated[THETA] * delta_t;
+	}
+
+	FILE *output_file = NULL;
+	switch (currentGeneration)
+	{
+	case 0:
+		output_file = trajectory_1;
+		break;
+	case 25:
+		output_file = trajectory_2;
+		break;
+	case 75:
+		output_file = trajectory_3;
+		break;
+	case 99:
+		output_file = trajectory_4;
+		break;
+	default:
+		printf("Error\n");
+		exit(1);
+	}
+	for (int i = 0; i < NB_SAMP; i++)
+	{
+		fprintf(output_file, "%f,%f\n", trajectory_estimated[i][R], trajectory_estimated[i][THETA]);
+	}
+}
 \end
 
 \User classes : GenomeClass
@@ -94,7 +160,7 @@ printf("==================================================================\n");
 \end
 
 \GenomeClass::crossover : // by default when entering the function child is a clone of parent1
-	child.perihelion_speed_to_find = (child.perihelion_speed_to_find + parent2.perihelion_speed_to_find) / 2;
+child.perihelion_speed_to_find = (child.perihelion_speed_to_find + parent2.perihelion_speed_to_find) / 2;
 \end
 
 \GenomeClass::mutator :
@@ -112,18 +178,15 @@ if (tossCoin(proba_mut))
 \end
 
 \GenomeClass::evaluator : // Lower is better
-// Variables
-double trajectory_estimated[NB_SAMP][DIM]; //< Earth trajectory around Sun (polar coord.)
-double prev_speed_estimated[DIM];		  //< Speed at previous step (polar coord.)
-double curr_speed_estimated[DIM];		  //< Speed at current step (polar coord.)
-int n_estimated = 0;					  //< Current step
+// Reset counter
+n_estimated = 0;
 
 // Initial conditions
-trajectory_estimated[n_estimated][R] = 147.1E9;					// Initial position (perihelion)
-trajectory_estimated[n_estimated][THETA] = M_PI;				// Initial position (perihelion)
-curr_speed_estimated[R] = 0;									// Initial speed (perihelion)
-curr_speed_estimated[THETA] = Genome.perihelion_speed_to_find; // Initial speed (average)
-n_estimated++;													// Next step
+trajectory_estimated[n_estimated][R] = 147.1E9;				   // Initial position (perihelion)
+trajectory_estimated[n_estimated][THETA] = M_PI;			   // Initial position (perihelion)
+curr_speed_estimated[R] = 0;								   // Initial speed (perihelion)
+curr_speed_estimated[THETA] = Genome.perihelion_speed_to_find; // Initial speed (perihelion)
+n_estimated++;												   // Next step
 
 // Compute trajectory
 for (; n_estimated < NB_SAMP; n_estimated++)
@@ -138,6 +201,7 @@ for (; n_estimated < NB_SAMP; n_estimated++)
   trajectory_estimated[n_estimated][THETA] = trajectory_estimated[n_estimated - 1][THETA] + curr_speed_estimated[THETA] * delta_t;
 }
 
+// Compute score
 double score = 0.0;
 double x, y, x_estimated, y_estimated;
 for (int i = 0; i < NB_SAMP; i++)
@@ -165,7 +229,7 @@ return score;
 \Default run parameters :
 	Number of generations : 100   			// NB_GEN
 	Time limit : 0              			// In seconds, 0 to deactivate
-	Population size : 100    	 			// POP_SIZE
+	Population size : 150    	 			// POP_SIZE
 	Offspring size : 100%        			// (percentage or absolute) 40% of the population size or 40
 	Crossover probability : 1   			// XOVER_PROB (0.8 -> 20% of children are just clones of parent)
 	Mutation probability : 1    			// MUT_PROB (???)

@@ -1,6 +1,6 @@
 import os
 import sys
-from math import cos, sin
+from math import cos, sin, isinf, isnan
 import matplotlib.pyplot as plt
 
 import os
@@ -68,8 +68,20 @@ def createFigure(folder, files, title):
         axs[i].plot(cart_coord_x, cart_coord_y, color="green", label="True trajectory")
         axs[i].plot(estimated_cart_coord_x, estimated_cart_coord_y, color="orange", label="Estimated trajectory " + str(i))
         # axs[i].legend()
-        axs[i].set_xlim(min(min(cart_coord_x), min(estimated_cart_coord_x))-margin, max(max(cart_coord_x), max(estimated_cart_coord_x))+margin)
-        axs[i].set_ylim(min(min(cart_coord_y), min(estimated_cart_coord_y))-margin, max(max(cart_coord_y), max(estimated_cart_coord_y))+margin)
+        x_min = min(min(cart_coord_x), min(estimated_cart_coord_x))
+        if isinf(x_min) or isnan(x_min):
+            x_min = min(cart_coord_x)
+        x_max = max(max(cart_coord_x), max(estimated_cart_coord_x))
+        if isinf(x_max) or isnan(x_max):
+            x_max = max(cart_coord_x)
+        y_min = min(min(cart_coord_y), min(estimated_cart_coord_y))
+        if isinf(y_min) or isnan(y_min):
+            y_min = min(cart_coord_y)
+        y_max = max(max(cart_coord_y), max(estimated_cart_coord_y))
+        if isinf(x_max) or isnan(x_max):
+            y_max = max(cart_coord_y)
+        axs[i].set_xlim(x_min-margin, x_max+margin)
+        axs[i].set_ylim(y_min-margin, y_max+margin)
     # Finish figure
     # fig.title(title)
     # fig.legend()
@@ -77,9 +89,9 @@ def createFigure(folder, files, title):
     # plt.show()
 
 
-folder = ["sun_mass"]
-file = [["trajectory_1", "trajectory_2", "trajectory_3", "trajectory_4"]]
-title = ["Evolution des trajectoires au fil des générations"]
+folder = ["sun_mass", "earth_speed"]
+file = [["trajectory_1", "trajectory_2", "trajectory_3", "trajectory_4"], ["trajectory_1", "trajectory_2", "trajectory_3", "trajectory_4"]]
+title = ["", ""]
 
 for i in range(len(folder)):
     createFigure(folder[i], file[i], title[i])
