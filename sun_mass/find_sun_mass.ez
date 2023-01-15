@@ -10,8 +10,6 @@ _____________________________________________*/
 #include <time.h>
 #include <float.h>
 
-static int test = 0; //< Fix trajectory_1 not detected...LOOOOOOOOOOL
-
 // Output files
 static FILE*trajectory_1 = fopen("trajectory_1.txt", "w");
 static FILE*trajectory_2 = fopen("trajectory_2.txt", "w");
@@ -95,7 +93,11 @@ fclose(trajectory_4);
 \end
 
 \At the end of each generation function :
-if (currentGeneration == 0 || currentGeneration == 20 || currentGeneration == 40 || currentGeneration == 59)
+const int gen_1 = 1;
+const int gen_2 = 20;
+const int gen_3 = 40;
+const int gen_4 = 59;
+if (currentGeneration == gen_1 || currentGeneration == gen_2 || currentGeneration == gen_3 || currentGeneration == gen_4)
 {
 	n_estimated = 0;
 
@@ -122,16 +124,16 @@ if (currentGeneration == 0 || currentGeneration == 20 || currentGeneration == 40
 	FILE *output_file = NULL;
 	switch (currentGeneration)
 	{
-	case 0:
+	case gen_1:
 		output_file = trajectory_1;
 		break;
-	case 20:
+	case gen_2:
 		output_file = trajectory_2;
 		break;
-	case 40:
+	case gen_3:
 		output_file = trajectory_3;
 		break;
-	case 59:
+	case gen_4:
 		output_file = trajectory_4;
 		break;
 	default:

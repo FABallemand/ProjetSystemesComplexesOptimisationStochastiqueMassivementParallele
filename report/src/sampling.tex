@@ -1,5 +1,8 @@
 \section{Sampling}
-Let us study the Earth in the heliocentric renferential.\\
+Later in ou study, we will use the trajectory of the Earth in the heliocentric renferential in order to evaluate our models. To be more precise, the score of a model will be the difference between the real Earth's trajectory and the trajectory we estimate with the values or functions we find.\\
+In order to do that, we need to be able to sample the Earth path in that referential. Let us study the Earth in the heliocentric renferential.\\
+
+\noindent
 \textbf{System:} Earth, assimilated to a material point of mass \(M_{T}\)\\
 \textbf{Referential:} Galilean assumed heliocentric renferential\\
 \textbf{Coordinates System:} Polar coordinates\\
@@ -27,7 +30,6 @@ M_{T}\vec(a) = \vec{F}
 \]
 
 In order to sample the Earth's trajectory, we perform two Euler methods in parallel: the first one allows us to obtain the speed and the second one gives us the actual position.
-
 \[
 \begin{equation}
     \begin{cases}
@@ -42,9 +44,11 @@ In order to sample the Earth's trajectory, we perform two Euler methods in paral
     \dot{\theta_{n+1}} = \dot{\theta_{n}} + \ddot{\theta_{n}} \delta t
     \end{cases}
 \end{equation}
-\]
 
-As we want to sample 1024 points: \[\delta t = \frac{365,25 \times 24 \times 3600}{1024}\]
+\text{with}
+\delta t = \frac{365,25 \times 24 \times 3600}{1024}
+\text{ as we want to sample 1024 points}
+\]
 
 We also have to set the initial conditions. Let us suppose we start to sample when the Earth is located at the perihelion, as the distance between the Earth and the Sun and the speed of the Earth at this point are known, we obtain the following conditions:
 \[

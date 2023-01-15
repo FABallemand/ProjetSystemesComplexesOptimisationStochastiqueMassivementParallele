@@ -92,7 +92,11 @@ fclose(trajectory_4);
 \end
 
 \At the end of each generation function :
-if (currentGeneration == 0 || currentGeneration == 25 || currentGeneration == 75 || currentGeneration == 99)
+const int gen_1 = 1;
+const int gen_2 = 25;
+const int gen_3 = 100;
+const int gen_4 = 149;
+if (currentGeneration == gen_1 || currentGeneration == gen_2 || currentGeneration == gen_3 || currentGeneration == gen_4)
 {
 	n_estimated = 0;
 
@@ -119,16 +123,16 @@ if (currentGeneration == 0 || currentGeneration == 25 || currentGeneration == 75
 	FILE *output_file = NULL;
 	switch (currentGeneration)
 	{
-	case 0:
+	case gen_1:
 		output_file = trajectory_1;
 		break;
-	case 25:
+	case gen_2:
 		output_file = trajectory_2;
 		break;
-	case 75:
+	case gen_3:
 		output_file = trajectory_3;
 		break;
-	case 99:
+	case gen_4:
 		output_file = trajectory_4;
 		break;
 	default:
