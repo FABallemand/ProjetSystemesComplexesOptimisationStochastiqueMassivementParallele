@@ -1,5 +1,5 @@
-\section{Evolutionnary Algorithm}
-The first part of this project consisted in finding three quantities that influence the orbit of Earth around Sun: the mass of Sun, the mass of Earth and the speed of earth at the perihelion, using the evolutionnary algorithms implemented in EASEA.\\
+\section{Evolutionary Algorithm}
+The first part of this project consisted in finding three quantities that influence the orbit of Earth around Sun: the mass of Sun, the mass of Earth and the speed of earth at the perihelion, using the evolutionary algorithms implemented in EASEA.\\
 In order to do that, we performed three distinct experiences because the sampling method does not allow us to find these three quantities simultaneously. It is impossible to find the mass of Earth and Sun at the same time because they are only bound in a product in Newton's law of universal gravitation. So there are a plethora of pair of values leading to the same result.\\
 The first step consist in sampling the Earth orbit around Sun with the real quantities in order to obtain a list of polar coordinates of Earth in the heliocentric referential.\\
 The genom of each individual correspond to the quantity to find (the mass or the speed) and is initialised to a value of the same order of magnitude as the real value.\\
@@ -37,7 +37,7 @@ We settled for weak elitism, a form of elitism that ensures the best individual 
 \end{table}
 
 \subsection{Mass of Earth}
-We did not managed to find Earth's mass using evolutionnary algorithm as this quantity does not appear in the equations defining Earth's trajectory around Sun. Nonetheless, we have a couple ideas regarding how we could achieve this.\\
+We did not managed to find Earth's mass using evolutionary algorithm as this quantity does not appear in the equations defining Earth's trajectory around Sun. Nonetheless, we have a couple ideas regarding how we could achieve this.\\
 The first being to simply change the referential: use the geocentric referential in order to study the movement of Sun. If we only consider those two planets (Earth and Sun) then their movements are relative to each other, that is to say: Earth is orbiting Sun and Sun is also orbiting Earth. In that case, we can can estimate the mass of Earth exactly the same way as we did in the previous part for the mass of Sun.\\
 Another way to get to that result would be to study those two celestial bodies in a referential centered on the center of Sun's trajectory. But in this case, we would have to study the movement of Earth is a non-galilean referential which is clearly out of the scope of this study.
 
