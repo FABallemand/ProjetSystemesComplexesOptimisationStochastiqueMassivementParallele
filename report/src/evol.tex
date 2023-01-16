@@ -1,6 +1,8 @@
 \section{Evolutionary Algorithm}
 The first part of this project consisted in finding three quantities that influence the orbit of Earth around Sun: the mass of Sun, the mass of Earth and the speed of earth at the perihelion, using the evolutionary algorithms implemented in EASEA.\\
+
 In order to do that, we performed three distinct experiences because the sampling method does not allow us to find these three quantities simultaneously. It is impossible to find the mass of Earth and Sun at the same time because they are only bound in a product in Newton's law of universal gravitation. So there are a plethora of pair of values leading to the same result.\\
+
 The first step consist in sampling the Earth orbit around Sun with the real quantities in order to obtain a list of polar coordinates of Earth in the heliocentric referential.\\
 The genom of each individual correspond to the quantity to find (the mass or the speed) and is initialised to a value of the same order of magnitude as the real value.\\
 From one generation to another, children are created by computing the mean of the two parents. Each individual can mutate with a given probability. This mutation correspond to an increase or a decrease of a given percentage of its genom.\\
