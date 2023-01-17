@@ -57,12 +57,22 @@ We also have to set the initial conditions. Let us suppose we start to sample wh
     r_{0} = 147,1 \times 10^{9}\\
     \theta_{0} = \pi\\
     \dot{r_{0}} = 0\\
-    \dot{\theta_{0}} = \frac{2\pi \times 30,2 \times 10^{3}}{\pi \times (3 (a + b) - \sqrt{(3a + b) \times (a + 3b)})}
+    \dot{\theta_{0}} = \frac{2\pi \times 30,2 \times 10^{3}}{\pi \left( 3 (a + b) - \sqrt{(3a + b) \times (a + 3b)}\right)}
     \end{cases}
 \end{equation}
 
-\text{with}
-a = 1521,0 \times 10^{8}
-\text{ and }
-b = 1471,0 \times 10^{8}
+% \text{with}
+% a = 1521,0 \times 10^{8}
+% \text{ and }
+% b = 1471,0 \times 10^{8}
+% \text{ the distances between the Earth and the Sun respectively at the aphelion and at the perihelion.}
 \]
+with \(a = 1521,0 \times 10^{8}\) and \(b = 1471,0 \times 10^{8}\) the distances between the Earth and the Sun respectively at the aphelion and at the perihelion.
+
+With this set of equations we can write a program that precisely compute 1024 positions of the Earth while orbiting around teh Sun.
+
+\begin{figure}[H]
+    \center
+    \includegraphics[scale=.5]{img/earth_trajectory_test.png}
+    \caption{Earth trajectory around the Sun (1024 points sampling)}
+\end{figure}

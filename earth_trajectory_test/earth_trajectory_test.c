@@ -27,9 +27,9 @@ int main()
     }
 
     // Constants
-    float sun_mass = 1.9884 * pow(10, 30);           //< Sun mass
-    float g_const = 6.67408 * pow(10, -11);          //< Gravitational constant
-    float delta_t = (365.25 * 24 * 3600) / NB_SAMP; //< Duration between two steps
+    float sun_mass = 1.9884E30;                         //< Sun mass
+    float g_const = 6.67408E-11;                        //< Gravitational constant
+    float delta_t = (365.25 * 24.0 * 3600.0) / NB_SAMP; //< Duration between two steps
 
     // Variables
     double trajectory[NB_SAMP][DIM]; //< Earth trajectory around Sun (polar coord.)
@@ -38,11 +38,11 @@ int main()
     int n = 0;                       //< Current step
 
     // Initial conditions
-    trajectory[n][R] = 147.1 * pow(10, 9);                                   // Initial position (perihelion)
+    trajectory[n][R] = 147.1E9;                                              // Initial position (perihelion)
     trajectory[n][THETA] = M_PI;                                             // Initial position (perihelion)
     curr_speed[R] = 0;                                                       // Initial speed (perihelion)
-    curr_speed[THETA] = 30.2 * pow(10, 3);                                   // Initial speed (perihelion)
-    curr_speed[THETA] = (2 * M_PI) / (365.5 * 24 * 3600);                    // Initial speed (average)
+    curr_speed[THETA] = 30.2E3;                                              // Initial speed (perihelion)
+    curr_speed[THETA] = (2 * M_PI) / (365.5 * 24.0 * 3600.0);                // Initial speed (average)
     fprintf(output_file, "%f,%f\n", trajectory[n][R], trajectory[n][THETA]); // Write coord. in output file
     n++;                                                                     // Next step
 
