@@ -89,7 +89,7 @@ def createFigure(folder, files, title):
     # plt.show()
 
 
-folder = ["sun_mass", "earth_speed"]
+folder = ["sun_mass", "perihelion_speed"]
 file = [["trajectory_1", "trajectory_2", "trajectory_3", "trajectory_4"], ["trajectory_1", "trajectory_2", "trajectory_3", "trajectory_4"]]
 title = ["", ""]
 

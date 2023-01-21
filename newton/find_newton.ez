@@ -1,0 +1,218 @@
+/*___________________________________________________________________
+
+	find_newton.ez // Loi de la Gravitation Universelle de Newton
+___________________________________________________________________*/
+
+\User declarations :
+// Mandatory declarations
+#define NO_FITNESS_CASES 1024
+#define VAR_LEN 1           // Number of dimensions
+#define GROW_FULL_RATIO 0.5 // cf. Koza's book on Genetic Programming
+
+// Multi-processing declarations
+#define NUMTHREAD 1024
+#define MAX_STACK 15
+
+// Constants
+#define NB_SAMP 1024
+#define DIM 2
+#define R 0
+#define THETA 1
+
+static constexpr float sun_mass = 1.9884E30;				     //< Sun mass (kg)
+static constexpr float earth_mass = 1.9884E30;					 //< Sun mass (kg)
+static constexpr float g_const = 6.67408E-11;					 //< Gravitational constant
+static constexpr float delta_t = (365.25 * 24 * 3600) / NB_SAMP; //< Duration between two steps
+
+// Variables
+static float trajectory[NB_SAMP][DIM]; //< Earth trajectory around Sun (polar coord.)
+static float prev_speed[DIM];		   //< Speed at previous step (polar coord.)
+static float curr_speed[DIM];		   //< Speed at current step (polar coord.)
+static int n = 0;					   //< Current step
+\end*
+
+\Before everything else function :
+srand(time(NULL)); // Initialise seed
+
+// Initial conditions
+trajectory[n][R] = 147.1E9;						      // Initial position (perihelion)
+trajectory[n][THETA] = M_PI;						  // Initial position (perihelion)
+curr_speed[R] = 0;									  // Initial speed (perihelion)
+curr_speed[THETA] = (2 * M_PI) / (365.5 * 24 * 3600); // Initial speed (average)
+n++;												  // Next step
+// Compute trajectory
+for (; n < NB_SAMP; n++)
+{
+	prev_speed[R] = curr_speed[R];
+	prev_speed[THETA] = curr_speed[THETA];
+
+	curr_speed[R] = prev_speed[R] + (trajectory[n - 1][R] * prev_speed[THETA] * prev_speed[THETA] - ((g_const * sun_mass) / (trajectory[n - 1][R] * trajectory[n - 1][R]))) * delta_t;
+	curr_speed[THETA] = prev_speed[THETA] + ((-2 * prev_speed[R] * prev_speed[THETA]) / trajectory[n - 1][R]) * delta_t;
+
+	trajectory[n][R] = trajectory[n - 1][R] + curr_speed[R] * delta_t;
+	trajectory[n][THETA] = trajectory[n - 1][THETA] + curr_speed[THETA] * delta_t;
+
+	// printf("%f,%f\n", trajectory[n][R], trajectory[n][THETA]);
+}
+
+// Generate data for EASEA evaluation
+generateData(&inputs, &outputs);
+
+printf("End before everything else function\n");
+\end
+
+\User functions :
+float force(float r)
+{
+	// float norm = (g_const * earth_mass * sun_mass) / (r * r);
+	float norm = (g_const * sun_mass) / (r * r);
+	printf("-> %f\n", norm);
+	return - norm;
+}
+
+int generateData(float ***inputs, float **outputs)
+{
+	(*inputs) = new float *[NO_FITNESS_CASES];
+	(*outputs) = new float[NO_FITNESS_CASES];
+
+	for (int i = 0; i < NO_FITNESS_CASES; i++)
+	{
+		(*inputs)[i]=new float[VAR_LEN];
+		float r = trajectory[i][R];
+		(*inputs)[i][0] = r;
+		(*outputs)[i] = force(r);
+	}
+
+	return NO_FITNESS_CASES;
+}
+
+void free_data()
+{
+	for (int i = 0; i < NO_FITNESS_CASES; i++)
+	{
+		delete[] inputs[i];
+	}
+	delete[] outputs;
+	delete[] inputs;
+}
+\end
+
+\After everything else function:
+std::cout << toString(((IndividualImpl*)EA->population->Best)->root) << std::endl;
+free_data();
+\end
+
+\At the beginning of each generation function:
+\end
+
+\At the end of each generation function:
+\end
+
+\At each generation before reduce function:
+\end
+
+
+\User classes :
+GenomeClass
+{
+  GPNode* root;
+}
+\end
+
+\GenomeClass::display:
+\end
+
+\GenomeClass::initialiser :
+Genome.root = ramped_hh(); // Initializer, cf. Koza GP
+\end
+
+\GenomeClass::crossover :
+simpleCrossOver(parent1, parent2, child); // cf. Koza GP
+child.valid = false;					  // to force the evaluation of the child
+\end
+
+\GenomeClass::mutator :
+simple_mutator(&Genome); // cf. Koza GP
+\end
+
+
+\begin operator description :
+OP_X, "x", 0, { RESULT = INPUT[0]; };
+OP_SUN, "sun_mass", 0, { RESULT = sun_mass; };
+OP_EARTH, "earth_mass", 0, { RESULT = earth_mass; };
+OP_ERC, "ERC", 0, { RESULT = ERC; };
+OP_ADD, "+", 2, { RESULT = OP1 + OP2; };
+OP_SUB, "-", 2, { RESULT = OP1 - OP2; };
+OP_MUL, "*", 2, { RESULT = OP1 * OP2; };
+OP_DIV, "/", 2, { if (!OP2) {RESULT = 1;} else {RESULT = OP1 / OP2;} };
+\end
+
+\GenomeClass::evaluator header:
+\end
+
+\GenomeClass::evaluator for each fc : // Compute error for one point
+float expected_value = OUTPUT;
+error = (expected_value - EVOLVED_VALUE) * (expected_value - EVOLVED_VALUE);
+\end
+
+\GenomeClass::evaluator accumulator : // ERROR is the sum of errors for each point
+return error / (float)NO_FITNESS_CASES;
+\end
+
+
+\User Makefile options: 
+CXXFLAGS+=-I/usr/local/cuda/common/inc/ -I/usr/local/cuda/include/
+LDFLAGS+=
+\end
+
+\Default run parameters :        
+Number of generations : 10   	        // NB_GEN
+Time limit: 0 			                // In seconds, 0 to deactivate
+Population size : 5000			        // POP_SIZE
+Offspring size : 5000                   // can be a percentage such as 40% 
+Mutation probability : 0.2              // Probability to call the mutation function
+Crossover probability : 1               // Probability to call the crossover function
+Evaluator goal : minimise               // or Maximise
+Selection operator: Tournament 7        // to select parents
+Surviving parents: 100%                 // to select breeders
+Surviving offspring: 100%               // to select among offspring for next generation
+Reduce parents operator: Tournament 2   // how to select the breeders
+Reduce offspring operator: Tournament 2 // how to select the offspring that will compete to access the next generation
+Final reduce operator: Tournament 7     // to select the individuals composing the next generation
+
+Elitism: Strong			                    // Strong = from parents pop, Weak = from parents + children
+Elite: 1
+Print stats: true
+Generate csv stats file:false			
+Generate gnuplot script:false
+Generate R script:false
+Plot stats:true	
+
+Remote island model: false
+IP file: ip.txt 			//File containing all the remote island's IP
+Server port : 2929
+Migration probability: 0.33
+
+Save population: false
+Start from file: false
+
+max init tree depth : 4
+min init tree depth : 2
+
+max tree depth : 8
+
+size of prog buffer : 200000000
+\end
+
+/*
+//======================//
+// HOW TO RUN THIS FILE //
+//======================//
+
+1/ Go to https://easea.unistra.fr/index.php/Installing_EASEA and install easea
+
+2/ Compile with easena: easena [-gp | -cuda_gp] find_newton.ez
+
+3/ Compile all C/C++/CUDA files: make
+
+*/
