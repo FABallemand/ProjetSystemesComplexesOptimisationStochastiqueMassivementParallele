@@ -1,10 +1,10 @@
 \section{Evolutionary Algorithm}
-The first part of this project consisted in finding three quantities that influence the orbit of Earth around Sun: the mass of Sun, the mass of Earth and the speed of earth at the perihelion, using the evolutionary algorithms implemented in EASEA.\\
+The first part of this project consisted in finding three quantities that influence the orbit of Earth around Sun: the mass of Sun, the mass of Earth and the speed of Earth at the perihelion, using the evolutionary algorithms implemented in EASEA.\\
 
 In order to do that, we performed three distinct experiences because the sampling method does not allow us to find these three quantities simultaneously. It is impossible to find the mass of Earth and Sun at the same time because they are only bound in a product in Newton's law of universal gravitation. So there are a plethora of pair of values leading to the same result.\\
 
 The first step consist in sampling the Earth orbit around Sun with the real quantities in order to obtain a list of polar coordinates of Earth in the heliocentric referential.\\
-The genom of each individual correspond to the quantity to find (the mass or the speed) and is initialised to a value of the same order of magnitude as the real value.\\
+The genom of each individual correspond to the quantity to find (the mass or the speed) and is initialised to a value of the same order of magnitude as the real value.(ON N'EST PAS CENSE CONNAITRE L'ORDRE DE GRANDEUR...)\\
 From one generation to another, children are created by computing the mean of the two parents. Each individual can mutate with a given probability. This mutation correspond to an increase or a decrease of a given percentage of its genom.\\
 The score is defined as the difference between the real orbit and the orbit with the quantity found in the genoms. That is to say: the sum of the distances between the corresponding points of the two trajectories. By doing so, the result of the algorithm does not directly depend on the value we want to find but rather on samples of coordinates that could have been made without knowing the quantity.\\
 We settled for weak elitism, a form of elitism that ensures the best individual of the global population (children and parents) is conserved in the next generation.
@@ -20,12 +20,25 @@ We settled for weak elitism, a form of elitism that ensures the best individual 
 % Nous utilisons de l'élitisme faible, c'est à dire que le meilleur individu de la population globale (parents et enfants) est garanti d'être conservé dans la prochaine génération.
 
 \subsection{Mass of Sun}
-% \clearpage
-\begin{wrapfigure}{R}{0.5\textwidth}
-    \center
-    \includegraphics[width=0.5\linewidth,scale=.3]{img/sun_mass.png}
-    \caption{Earth trajectories depending of the mass of Sun}
-\end{wrapfigure}
+Using the method described above, we managed to find the mass of the Sun with 100\% accuracy (Figure \ref{sun_mass_1}). As we can see on Figure \ref{sun_mass_2}, the trajectory of the Earth around the Sun slowly approach the real world trajectory over generations.
+
+\begin{figure}[H]
+\begin{lstlisting}
+==================================================================
+SUN MASS: 1988399999999999986508702416896.000000 (real), 1988399999999999986508702416896.000000 (estimated)
+SCORE: 0.000000
+==================================================================
+SUN MASS: 1988399999999999986508702416896.000000 (real), 2078119486984494172163593469952.000000 (estimated)
+SCORE: 41697618869063.750000
+==================================================================
+     59          1.430s            6000            6000 0.000000000e+00 3.0e+11 3.0e+12 3.0e+13
+EASEA LOG [INFO]: Seed: 1675245974
+EASEA LOG [INFO]: Best fitness: 0
+EASEA LOG [INFO]: Elapsed time: 1.4326
+\end{lstlisting}
+\caption{Output of the EASEA program}
+\label{sun_mass_1}
+\end{figure}
 
 \begin{table}[H]
     \begin{tabular}{lllll}
@@ -36,7 +49,15 @@ We settled for weak elitism, a form of elitism that ensures the best individual 
     Mutation variation rate & 0.05
     \end{tabular}
     \caption{Parameters used to find the mass of Sun}
+    \label{sun_mass_table}
 \end{table}
+
+\begin{figure}[H]
+    \center
+    \includegraphics[scale=.3]{img/sun_mass.png}
+    \caption{Earth trajectories depending of the mass of Sun}
+    \label{sun_mass_2}
+\end{figure}
 
 \subsection{Mass of Earth}
 We did not managed to find Earth's mass using evolutionary algorithm as this quantity does not appear in the equations defining Earth's trajectory around Sun. Nonetheless, we have a couple ideas regarding how we could achieve this.\\
@@ -44,16 +65,25 @@ The first being to simply change the referential: use the geocentric referential
 Another way to get to that result would be to study those two celestial bodies in a referential centered on the center of Sun's trajectory. But in this case, we would have to study the movement of Earth is a non-galilean referential which is clearly out of the scope of this study.
 
 \subsection{Speed of Earth at Perihelion}
-% \clearpage
-\begin{wrapfigure}{R}{0.5\textwidth}
-    \center
-    \includegraphics[width=0.5\linewidth,scale=.3]{img/earth_speed.png}
-    \caption{Earth trajectories depending of the speed of Earth at the perihelion}
-\end{wrapfigure}
+In order to find the speed of planet Earth at the perihelion we apply the same steps as before: initialisation, crossover, mutation and evaluation. Unless this time we have to change a couples of values. As the speed of Earth in radian per second is so little, it is not well handled by our program (ie: assimilated to zero). To combat that, we simply consider the speed in radian per day leading to values that can properly be handled by computers. This implies also converting the gravitationnal constant and our sampling step to fit the new unit scale.\\
+Once again, we obtained very high accuracy results (Figure \ref{speed_1}) and we clearly see how the trajectory evolves throughout the generations (Figure \ref{speed_2}).
 
-In order to find the speed of planet Earth at the perihelion we apply the same steps as before: initialisation, crossover, mutation and evaluation. Unless this time we have to change a couples of values. As the speed of Earth in radian per second is so little, it is not well handled by our program (ie: assimilated to zero). To combat that, we simply consider the speed in radian per day leading to values that can properly be handled by computers. This implies also converting the gravitationnal constant and our sampling step to fit the new unit scale.
+\begin{figure}[H]
+\begin{lstlisting}
+==================================================================
+PERIHELION SPEED: 0.017440 (real), 0.017440 (estimated), [1.000000]
+SCORE: 0.000000
+==================================================================
+        99          3.397s           15000           15000 0.000000000e+00 1.6e+11 1.3e+12 1.5e+13
+EASEA LOG [INFO]: Seed: 1675247174
+EASEA LOG [INFO]: Best fitness: 0
+EASEA LOG [INFO]: Elapsed time: 3.39933
+\end{lstlisting}
+\caption{Output of the EASEA pogram}
+\label{speed_1}
+\end{figure}
 
-\begin{table}
+\begin{table}[H]
     \begin{tabular}{lllll}
     Number of generations & 100 \\
     Population size & 150 \\
@@ -62,4 +92,12 @@ In order to find the speed of planet Earth at the perihelion we apply the same s
     Mutation variation rate & 0.05
     \end{tabular}
     \caption{Parameters used to find the speed of Earth at the perihelion}
+    \label{speed_table}
 \end{table}
+
+\begin{figure}[H]
+    \center
+    \includegraphics[scale=.3]{img/earth_speed.png}
+    \caption{Earth trajectories depending of the speed of Earth at the perihelion}
+    \label{speed_2}
+\end{figure}
