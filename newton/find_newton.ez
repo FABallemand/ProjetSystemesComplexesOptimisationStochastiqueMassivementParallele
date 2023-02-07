@@ -19,8 +19,8 @@ ___________________________________________________________________*/
 #define R 0
 #define THETA 1
 
-static constexpr float sun_mass = 1.9884E30;				     //< Sun mass (kg)
-static constexpr float earth_mass = 1.9884E30;					 //< Sun mass (kg)
+static constexpr float sun_mass = 1.9884E20;				     //< Sun mass (kg)
+static constexpr float earth_mass = 5.97229E19;					 //< Earth mass (kg)
 static constexpr float g_const = 6.67408E-11;					 //< Gravitational constant
 static constexpr float delta_t = (365.25 * 24 * 3600) / NB_SAMP; //< Duration between two steps
 
@@ -29,7 +29,7 @@ static float trajectory[NB_SAMP][DIM]; //< Earth trajectory around Sun (polar co
 static float prev_speed[DIM];		   //< Speed at previous step (polar coord.)
 static float curr_speed[DIM];		   //< Speed at current step (polar coord.)
 static int n = 0;					   //< Current step
-\end*
+\end
 
 \Before everything else function :
 srand(time(NULL)); // Initialise seed
@@ -52,7 +52,7 @@ for (; n < NB_SAMP; n++)
 	trajectory[n][R] = trajectory[n - 1][R] + curr_speed[R] * delta_t;
 	trajectory[n][THETA] = trajectory[n - 1][THETA] + curr_speed[THETA] * delta_t;
 
-	// printf("%f,%f\n", trajectory[n][R], trajectory[n][THETA]);
+	printf("%f,%f\n", trajectory[n][R], trajectory[n][THETA]);
 }
 
 // Generate data for EASEA evaluation
@@ -62,12 +62,12 @@ printf("End before everything else function\n");
 \end
 
 \User functions :
-float force(float r)
+double force(float r)
 {
-	// float norm = (g_const * earth_mass * sun_mass) / (r * r);
-	float norm = (g_const * sun_mass) / (r * r);
-	printf("-> %f\n", norm);
-	return - norm;
+	//float norm = (g_const * earth_mass * sun_mass) / (r * r);
+	double norm =  (g_const * earth_mass * sun_mass) / (r * r);
+	//printf("-> %f\n", norm);
+	return norm;
 }
 
 int generateData(float ***inputs, float **outputs)
@@ -137,12 +137,13 @@ simple_mutator(&Genome); // cf. Koza GP
 
 
 \begin operator description :
-OP_X, "x", 0, { RESULT = INPUT[0]; };
-OP_SUN, "sun_mass", 0, { RESULT = sun_mass; };
-OP_EARTH, "earth_mass", 0, { RESULT = earth_mass; };
-OP_ERC, "ERC", 0, { RESULT = ERC; };
-OP_ADD, "+", 2, { RESULT = OP1 + OP2; };
-OP_SUB, "-", 2, { RESULT = OP1 - OP2; };
+OP_R, "r", 0, { RESULT = INPUT[0]; };
+OP_G, "g", 0, { RESULT = g_const; };
+OP_SUN, "s", 0, { RESULT = sun_mass; };
+OP_EARTH, "e", 0, { RESULT = earth_mass; };
+OP_ERC, "0", 0, { RESULT = 0; };
+//OP_ADD, "+", 2, { RESULT = OP1 + OP2; };
+//OP_SUB, "-", 2, { RESULT = OP1 - OP2; };
 OP_MUL, "*", 2, { RESULT = OP1 * OP2; };
 OP_DIV, "/", 2, { if (!OP2) {RESULT = 1;} else {RESULT = OP1 / OP2;} };
 \end
@@ -151,8 +152,8 @@ OP_DIV, "/", 2, { if (!OP2) {RESULT = 1;} else {RESULT = OP1 / OP2;} };
 \end
 
 \GenomeClass::evaluator for each fc : // Compute error for one point
-float expected_value = OUTPUT;
-error = (expected_value - EVOLVED_VALUE) * (expected_value - EVOLVED_VALUE);
+double expected_value = OUTPUT;
+error = fabs((expected_value - EVOLVED_VALUE));
 \end
 
 \GenomeClass::evaluator accumulator : // ERROR is the sum of errors for each point
@@ -166,7 +167,7 @@ LDFLAGS+=
 \end
 
 \Default run parameters :        
-Number of generations : 10   	        // NB_GEN
+Number of generations : 75   	        // NB_GEN
 Time limit: 0 			                // In seconds, 0 to deactivate
 Population size : 5000			        // POP_SIZE
 Offspring size : 5000                   // can be a percentage such as 40% 
@@ -199,7 +200,7 @@ Start from file: false
 max init tree depth : 4
 min init tree depth : 2
 
-max tree depth : 8
+max tree depth : 6
 
 size of prog buffer : 200000000
 \end
