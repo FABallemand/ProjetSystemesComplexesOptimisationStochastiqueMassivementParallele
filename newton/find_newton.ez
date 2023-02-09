@@ -51,8 +51,6 @@ for (; n < NB_SAMP; n++)
 
 	trajectory[n][R] = trajectory[n - 1][R] + curr_speed[R] * delta_t;
 	trajectory[n][THETA] = trajectory[n - 1][THETA] + curr_speed[THETA] * delta_t;
-
-	printf("%f,%f\n", trajectory[n][R], trajectory[n][THETA]);
 }
 
 // Generate data for EASEA evaluation
