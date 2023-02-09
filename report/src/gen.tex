@@ -1,16 +1,66 @@
 \section{Genetic Programming}
+In the second part of the project, we had to find Newton's law of universal
+gravitation using genetic programming.
+
+\subsection{Results}
+Our original plan was to sample the Earth's trajectory only once with the
+target law, that is to say Newton's law of universal gravitation. Then to compute the Earth's trajectory for each new individual (i.e. for each new law) produced by the genetic algorithm. The fitness score of each individual would have been the sum of the distances between two corresponding points in the samplings as explained in Figure \ref{error}.\\
+
+However, Easena does not allow the user to call the generated function with
+"dynamic" arguments, so it was not possible to perform a resampling we had to
+abandon this idea.\\
+After some thought, we decided to do only one sampling (the real one) and
+compare the strength calculated using Newtown's second law and the law of each
+individual (for each point in the sampling). Although this approach worked, it
+has a major flaw with our first idea. We need the force at each point to find
+the target law. So we need to know something that is only computable with the
+law to find the law...\\
+
+Initially, we gave our individual four binary operators (+,-,*,/), 3 constants
+(the mass of the sun, the mass of the earth and the gravitational constant) and
+one variable (the distance between the two heavenly bodies). It also had the
+possibility to generate constants between zero and one. However, given the
+gigantic scale of our constant, GP created suboptimal individuals with outliers
+(e.g., adding 0.1 to the final result) without compromising their fitness
+score, so we decided to disable ERC (constant between 0 and 1).\\
+We also end up disabling the + and - operators to speed up the process and keep
+simpler formulas.\\
+
+Due to the rapid convergence of the GP population, we started with 5000
+individuals and only 75 generations.\\
+
+Seed: 1675790620\\
 
 \subsection{Newton's law of universal gravitation}
 
-In the second part of the project, we had to find Newton's law of universal gravitation using genetic programming, again by using easena.\\
+% In the second part of the project, we had to find Newton's law of universal
+% gravitation using genetic programming, again by using easena.\\
 
-Our original idea was to sample the earth's trajectory with the target law once, and then create a new sampling for each individual (law). We would have then used the mean square error between each point in the two samplings to calculate the fitness score.\\
-However, Easena does not allow the user to call the generated function with "dynamic" arguments, so it was not possible to perform a resampling we had to abandon this idea.\\
-After some thought, we decided to do only one sampling (the real one) and compare the strength calculated using Newtown's second law and the law of each individual (for each point in the sampling). Although this approach worked, it has a major flaw with our first idea. We need the force at each point to find the target law. So we need to know something that is only computable with the law to find the law...\\
+% Our original idea was to sample the earth's trajectory with the target law
+% once, and then create a new sampling for each individual (law). We would have
+% then used the mean square error between each point in the two samplings to
+% calculate the fitness score.\\
+% However, Easena does not allow the user to call the generated function with
+% "dynamic" arguments, so it was not possible to perform a resampling we had to
+% abandon this idea.\\
+% After some thought, we decided to do only one sampling (the real one) and
+% compare the strength calculated using Newtown's second law and the law of each
+% individual (for each point in the sampling). Although this approach worked, it
+% has a major flaw with our first idea. We need the force at each point to find
+% the target law. So we need to know something that is only computable with the
+% law to find the law...\\
 
-Initially, we gave our individual four binary operators (+,-,*,/), 3 constants (the mass of the sun, the mass of the earth and the gravitational constant) and one variable (the distance between the two heavenly bodies). It also had the possibility to generate constants between zero and one. However, given the gigantic scale of our constant, GP created suboptimal individuals with outliers (e.g., adding 0.1 to the final result) without compromising their fitness score, so we decided to disable ERC (constant between 0 and 1).\\
-We also end up disabling the + and - operators to speed up the process and keep simpler formulas.\\
+% Initially, we gave our individual four binary operators (+,-,*,/), 3 constants
+% (the mass of the sun, the mass of the earth and the gravitational constant) and
+% one variable (the distance between the two heavenly bodies). It also had the
+% possibility to generate constants between zero and one. However, given the
+% gigantic scale of our constant, GP created suboptimal individuals with outliers
+% (e.g., adding 0.1 to the final result) without compromising their fitness
+% score, so we decided to disable ERC (constant between 0 and 1).\\
+% We also end up disabling the + and - operators to speed up the process and keep
+% simpler formulas.\\
 
-Due to the rapid convergence of the GP population, we started with 5000 individuals and only 75 generations.\\
+% Due to the rapid convergence of the GP population, we started with 5000
+% individuals and only 75 generations.\\
 
-Seed: 1675790620\\
+% Seed: 1675790620\\
