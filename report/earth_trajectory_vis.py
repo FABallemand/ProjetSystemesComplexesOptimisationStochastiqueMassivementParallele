@@ -29,7 +29,7 @@ def polToCart(estimated_polar_coord_r, estimated_polar_coord_theta):
     return estimated_cart_coord_x, estimated_cart_coord_y
 
 
-def createFigure(folder, files, title):
+def createFigure(folder, files, title, param):
 
     # Create figure
     fig, axs = plt.subplots(len(files))
@@ -49,12 +49,21 @@ def createFigure(folder, files, title):
             polar_coord_theta.append(float(theta))
     cart_coord_x, cart_coord_y = polToCart(polar_coord_r, polar_coord_theta)
     # Found trajectories
+    proba_mut = 0
+    var_mut = 0
+    nb_gen = 0
+    pop_size = 0
     for i in range(len(files)):
         estimated_polar_coord_r = []
         estimated_polar_coord_theta = []
         estimated_cart_coord_x = []
         estimated_cart_coord_y = []
         with open(folder + "/" + files[i] + ".txt") as file:
+            k = 0
+            if param and i==0:
+                firstline = file.readline()
+                # print("FIRST LINE =", firstline)
+                proba_mut, var_mut, nb_gen, pop_size = firstline.split(",")
             for line in file:
                 r, theta = line.split(',')
                 estimated_polar_coord_r.append(float(r))
@@ -85,13 +94,19 @@ def createFigure(folder, files, title):
     # Finish figure
     # fig.title(title)
     # fig.legend()
-    fig.savefig("report/img/" + folder + ".png")
+    if param:
+        fig.savefig("report/img/" + folder + "_" + proba_mut + "_" + var_mut + "_" + nb_gen + "_" + pop_size + ".png")
+    else:
+        fig.savefig("report/img/" + folder + ".png")
     # plt.show()
 
 
-folder = ["sun_mass", "perihelion_speed"]
-file = [["trajectory_1", "trajectory_2", "trajectory_3", "trajectory_4"], ["trajectory_1", "trajectory_2", "trajectory_3", "trajectory_4"]]
-title = ["", ""]
+folder = ["sun_mass", "perihelion_speed", "perihelion_speed_test"]
+file = [["trajectory_1", "trajectory_2", "trajectory_3", "trajectory_4"],
+    ["trajectory_1", "trajectory_2", "trajectory_3", "trajectory_4"],
+    ["trajectory_1", "trajectory_2", "trajectory_3", "trajectory_4"]]
+title = ["", "", ""]
+param = [False, False, True]
 
 for i in range(len(folder)):
-    createFigure(folder[i], file[i], title[i])
+    createFigure(folder[i], file[i], title[i], param[i])
