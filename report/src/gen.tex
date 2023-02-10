@@ -2,29 +2,68 @@
 In the second part of the project, we had to find Newton's law of universal
 gravitation using genetic programming.
 
-\subsection{Method}
+\subsection{Fitness Measurement}
 Our original plan was to sample the Earth's trajectory only once with the
 target law, that is to say Newton's law of universal gravitation. Then to
 compute the Earth's trajectory for each new individual (i.e. for each new law)
 produced by the genetic algorithm. The fitness score of each individual would
 have been the sum of the distances between two corresponding points in the
-samplings as explained in Figure \ref{error}.\\
+samplings as explained in Figure \ref{error_1}. However, EASEA does not allow
+the
+user to call the generated function with
+"dynamic" arguments, so it was not possible to perform the sampling anew. So we
+had to abandon this idea.\\
 
-However, EASEA does not allow the user to call the generated function with
-"dynamic" arguments, so it was not possible to perform a resampling we had to
-abandon this idea.\\
-After some thought, we decided to do only one sampling (the real one) and
-compare the strength calculated using Newtown's second law and the law of each
-individual (for each point in the sampling). Although this approach worked, it
-has a major flaw with our first idea. We need the force at each point to find
-the target law. So we need to know something that is only computable with the
-law to find the law...\\
+After some thought, we decided to do only one sampling with the correct
+universal law of gravitation. Knowing the position of the Earth in the
+heliocentric referential, we were able to compute the norm of the attractive
+force existing between Earth and Sun. Instead of computing the sum of the
+errors between the coordinates like in Sectin \ref{evol}, the error was set to
+correspond to the sum of the differences between the real force and the
+estimated force at each point of the path (\Figure \ref{error_2}).\\
 
-Initially, we gave our individual four binary operators (+,-,*,/), 3 constants
-(the mass of the sun, the mass of the earth and the gravitational constant) and
-one variable (the distance between the two heavenly bodies). It also had the
-possibility to generate constants between zero and one. However, given the
-gigantic scale of our constant, GP created suboptimal individuals with outliers
+\begin{figure}
+    \[ error = \sum_{i=0}^{n} | f(p_{i}) - \hat{f}(p_{i}) | \]
+    where:
+    \begin{itemize}
+        \item \(n\) denotes the number of samples (typically 1024)
+        \item \(p_{i}\) corresponds to the i-th sampled point on the real
+              Earth's
+              trajectory
+        \item \(f\) correspond to Newton's law of universal gravitation
+        \item \(\hat{f}\) is the estimation of the Newton's law of universal
+              gravitation made by the program
+    \end{itemize}
+    \caption{Expression of the error for evolutionary algorithms}
+    \label{error_2}
+\end{figure}
+
+Although this approach worked (as shown in Section \ref{gp}), it
+has a major flaw with compared to our first idea. We need the force at each
+point to find
+the target law. In other words: we need to know something that is only
+computable with the
+real law in order to find the law...\\
+
+\subsection{Newton's law of universal gravitation}
+\ref{gp}
+In order to find Newton's law of universal gravitation using genetic
+programming we needed to adjust some parameters on top of the fitness
+measure.\\
+
+Initially, we gave our individual four binary operators (+,-,*,/), three
+constants (the mass of the sun, the mass of the earth and the gravitational
+constant) and
+one variable (the distance between the two heavenly bodies). The program also
+had the possibility to generate constants between zero and one.\\
+
+Figure \ref{gp_1} shows it is possible to find the law albeit at the expense of
+a long computation time. In fact in order to find the exact law we need to
+create a large population (typically 5000 individuals) and let the algorithm
+works during hundreds of generations (in htis instance 500 generations).\\
+
+However, given the
+gigantic scale of our constant, the genetic program created suboptimal individuals with outliers
 (e.g., adding 0.1 to the final result) without compromising their fitness
 score, so we decided to disable ERC (constant between 0 and 1).\\
 We also end up disabling the + and - operators to speed up the process and keep
@@ -33,9 +72,27 @@ simpler formulas.\\
 Due to the rapid convergence of the GP population, we started with 5000
 individuals and only 75 generations.\\
 
-Seed: 1675790620\\
-
-\subsection{Newton's law of universal gravitation}
+\begin{figure}
+    \begin{lstlisting}
+490        436.712s         2455000         2455000 0.000000000e+00 6.6e+03 2.2e+05 8.2e+06
+491        438.153s         2460000         2460000 0.000000000e+00 4.9e+03 1.8e+05 8.2e+06
+492        439.599s         2465000         2465000 0.000000000e+00 8.3e+03 2.5e+05 8.2e+06
+493        441.041s         2470000         2470000 0.000000000e+00 1.3e+04 3.3e+05 8.2e+06
+494        442.465s         2475000         2475000 0.000000000e+00 1.3e+04 3.2e+05 8.2e+06
+495        443.908s         2480000         2480000 0.000000000e+00 1.4e+04 3.3e+05 8.2e+06
+496        445.386s         2485000         2485000 0.000000000e+00 3.7e+03 1.6e+05 8.2e+06
+497        446.839s         2490000         2490000 0.000000000e+00 4.1e+03 1.7e+05 8.2e+06
+498        448.327s         2495000         2495000 0.000000000e+00 4.1e+03 1.5e+05 8.2e+06
+499        449.773s         2500000         2500000 0.000000000e+00 4.1e+03 1.7e+05 8.2e+06
+EASEA LOG [INFO]: Seed: 1676050646
+EASEA LOG [INFO]: Best fitness: 0
+EASEA LOG [INFO]: Elapsed time: 449.774
+((((G)*(s))*(e))/((r)*(r)))
+\end{lstlisting}
+    \caption{Output of the EASEA genetic program (500 generations of 5000
+        individuals)}
+    \label{gp_1}
+\end{figure}
 
 % In the second part of the project, we had to find Newton's law of universal
 % gravitation using genetic programming, again by using easena.\\

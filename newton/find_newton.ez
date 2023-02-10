@@ -135,12 +135,13 @@ simple_mutator(&Genome); // cf. Koza GP
 
 \begin operator description :
 OP_R, "r", 0, { RESULT = INPUT[0]; };
-OP_G, "g", 0, { RESULT = g_const; };
+OP_G, "G", 0, { RESULT = g_const; };
 OP_SUN, "s", 0, { RESULT = sun_mass; };
 OP_EARTH, "e", 0, { RESULT = earth_mass; };
-OP_ERC, "0", 0, { RESULT = 0; };
-//OP_ADD, "+", 2, { RESULT = OP1 + OP2; };
-//OP_SUB, "-", 2, { RESULT = OP1 - OP2; };
+// OP_ERC, "0", 0, { RESULT = 0; }; // No ERC
+OP_ERC, "ERC", 0, {RESULT=ERC;};
+OP_ADD, "+", 2, { RESULT = OP1 + OP2; };
+OP_SUB, "-", 2, { RESULT = OP1 - OP2; };
 OP_MUL, "*", 2, { RESULT = OP1 * OP2; };
 OP_DIV, "/", 2, { if (!OP2) {RESULT = 1;} else {RESULT = OP1 / OP2;} };
 \end
@@ -164,9 +165,9 @@ LDFLAGS+=
 \end
 
 \Default run parameters :        
-Number of generations : 75   	        // NB_GEN
+Number of generations : 500   	        // NB_GEN (300, 500)
 Time limit: 0 			                // In seconds, 0 to deactivate
-Population size : 5000			        // POP_SIZE
+Population size : 5000			        // POP_SIZE (5000, 5000)
 Offspring size : 5000                   // can be a percentage such as 40% 
 Mutation probability : 0.2              // Probability to call the mutation function
 Crossover probability : 1               // Probability to call the crossover function
@@ -184,7 +185,7 @@ Print stats: true
 Generate csv stats file:false			
 Generate gnuplot script:false
 Generate R script:false
-Plot stats:true	
+Plot stats:false	
 
 Remote island model: false
 IP file: ip.txt 			//File containing all the remote island's IP

@@ -1,4 +1,5 @@
 \section{Evolutionary Algorithm}
+\section{evol}
 The first part of this project consisted in finding three quantities that
 influence the orbit of Earth around Sun: the mass of Sun, the mass of Earth and
 the speed of Earth at the perihelion, using the evolutionary algorithms
@@ -25,7 +26,7 @@ mutation correspond to an increase or a decrease of a given percentage of its
 genom. This percentage is randomly selected in a fixed interval.\\
 The score is defined as the difference between the real orbit and the orbit
 with the quantity found in the genoms. That is to say: the sum of the distances
-between corresponding points from the two trajectories (Figure \ref{error}). By
+between corresponding points from the two trajectories (Figure \ref{error_1}). By
 doing so, the
 result of the algorithm does not directly depend on the value we want to find
 but rather on samples of coordinates that could have been made without knowing
@@ -48,7 +49,7 @@ generation.
         \item \(dist\) is the Euclidian distance
     \end{itemize}
     \caption{Expression of the error for evolutionary algorithms}
-    \label{error}
+    \label{error_1}
 \end{figure}
 
 % La première partie du sujet consistait à retrouver trois valeurs influençant l'orbite de la Terre autour du Soleil : la masse du Soleil, la masse de la Terre et la vitesse de la Terre à la périhélie en utilisant les algorithme évolutionnaires présents dans EASEA.\\
@@ -84,7 +85,7 @@ EASEA LOG [INFO]: Seed: 1675245974
 EASEA LOG [INFO]: Best fitness: 0
 EASEA LOG [INFO]: Elapsed time: 1.4326
 \end{lstlisting}
-    \caption{Output of the EASEA program}
+    \caption{Output of the EASEA program when seeking the value of Sun's mass}
     \label{sun_mass_1}
 \end{figure}
 
@@ -142,7 +143,8 @@ probability and rate are still low.\\
 
 Playing around with the paramters reveals interesting results. On Figure
 \ref{speed_low}, corresponding to a evolution with very low mutation
-probability and mutation rate (typically 1\%), we clearly see that the evolution
+probability and mutation rate (typically 1\%), we clearly see that the
+evolution
 converges at a slower pace: there is basically no change accross the evolution
 meaning the initial diversity of the population is not enough to quickly get to
 the result. Increasing the mutation's paramters show significantly better
@@ -169,7 +171,7 @@ EASEA LOG [INFO]: Seed: 1675247174
 EASEA LOG [INFO]: Best fitness: 0
 EASEA LOG [INFO]: Elapsed time: 3.39933
 \end{lstlisting}
-    \caption{Output of the EASEA pogram}
+    \caption{Output of the EASEA pogram when seeking the value the speed at the perihelion}
     \label{speed_1}
 \end{figure}
 
@@ -216,3 +218,14 @@ EASEA LOG [INFO]: Elapsed time: 3.39933
         Earth's speed at perihelion (high mutation probability and rate)}
     \label{speed_high}
 \end{figure}
+
+This part of the project demonstrates that evoltuion algorithms are very power
+tools when handled properly. As long as the fitness value is meaningful and the
+parameters allows the population to converge in the given amount of generations
+\textemdash that is to say there is enough genetic variety (population size)
+and good genetic operators (efficient mutation operator)\textemdash the output
+should be close to the expected result. In this project the result structure
+was simple (a single value) but in other more complex tasks the output might
+look a lot different and a bit more analysis, involving a good amount of
+critical thinking, must be performed in order to evaluate the correctness of
+the result.
