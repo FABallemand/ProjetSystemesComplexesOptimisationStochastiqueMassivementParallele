@@ -5,9 +5,9 @@ ___________________________________________________________________*/
 
 \User declarations :
 // Mandatory declarations
-#define NO_FITNESS_CASES 1024
-#define VAR_LEN 1           // Number of dimensions
-#define GROW_FULL_RATIO 0.5 // cf. Koza's book on Genetic Programming
+#define NO_FITNESS_CASES 1024 // Number of samples
+#define VAR_LEN 1			  // Number of dimensions
+#define GROW_FULL_RATIO 0.5	  // cf. Koza's book on Genetic Programming
 
 // Multi-processing declarations
 #define NUMTHREAD 1024
@@ -60,10 +60,9 @@ printf("End before everything else function\n");
 \end
 
 \User functions :
-double force(float r)
+float force(float r)
 {
-	//float norm = (g_const * earth_mass * sun_mass) / (r * r);
-	double norm =  (g_const * earth_mass * sun_mass) / (r * r);
+	float norm =  (g_const * earth_mass * sun_mass) / (r * r);
 	//printf("-> %f\n", norm);
 	return norm;
 }

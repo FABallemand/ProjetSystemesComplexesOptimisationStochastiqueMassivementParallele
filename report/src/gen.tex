@@ -2,11 +2,15 @@
 In the second part of the project, we had to find Newton's law of universal
 gravitation using genetic programming.
 
-\subsection{Results}
+\subsection{Method}
 Our original plan was to sample the Earth's trajectory only once with the
-target law, that is to say Newton's law of universal gravitation. Then to compute the Earth's trajectory for each new individual (i.e. for each new law) produced by the genetic algorithm. The fitness score of each individual would have been the sum of the distances between two corresponding points in the samplings as explained in Figure \ref{error}.\\
+target law, that is to say Newton's law of universal gravitation. Then to
+compute the Earth's trajectory for each new individual (i.e. for each new law)
+produced by the genetic algorithm. The fitness score of each individual would
+have been the sum of the distances between two corresponding points in the
+samplings as explained in Figure \ref{error}.\\
 
-However, Easena does not allow the user to call the generated function with
+However, EASEA does not allow the user to call the generated function with
 "dynamic" arguments, so it was not possible to perform a resampling we had to
 abandon this idea.\\
 After some thought, we decided to do only one sampling (the real one) and
