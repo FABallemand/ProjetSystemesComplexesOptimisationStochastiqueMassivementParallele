@@ -147,7 +147,7 @@ def createFigureGP():
     plt.xlim(x_min-margin, x_max+margin)
     plt.ylim(y_min-margin, y_max+margin)
     # Finish figure
-    fig.savefig("report/img/newton_gp_1.png")
+    fig.savefig("report/img/newton_gp_2.png")
     # plt.show()
 
 

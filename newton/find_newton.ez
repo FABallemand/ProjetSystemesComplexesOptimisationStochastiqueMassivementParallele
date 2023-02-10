@@ -165,10 +165,10 @@ LDFLAGS+=
 \end
 
 \Default run parameters :        
-Number of generations : 300   	        // NB_GEN (300, 500)
+Number of generations : 100   	        // NB_GEN (300, 500)
 Time limit: 0 			                // In seconds, 0 to deactivate
-Population size : 5000			        // POP_SIZE (5000, 5000)
-Offspring size : 5000                   // can be a percentage such as 40% 
+Population size : 1000			        // POP_SIZE (5000, 5000)
+Offspring size : 1000                   // can be a percentage such as 40% 
 Mutation probability : 0.2              // Probability to call the mutation function
 Crossover probability : 1               // Probability to call the crossover function
 Evaluator goal : minimise               // or Maximise
