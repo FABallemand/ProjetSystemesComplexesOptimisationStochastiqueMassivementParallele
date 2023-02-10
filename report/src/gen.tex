@@ -39,7 +39,7 @@ estimated force at each point of the path (\Figure \ref{error_2}).\\
 \end{figure}
 
 Although this approach worked (as shown in Section \ref{gp}), it
-has a major flaw with compared to our first idea. We need the force at each
+has a major flaw compared to our first idea. We need the force at each
 point to find
 the target law. In other words: we need to know something that is only
 computable with the
@@ -52,7 +52,7 @@ programming we needed to adjust some parameters on top of the fitness
 measure.\\
 
 The first thing to adjust was the mass of the planets. As far as we know, EASEA
-is limited to float for genetic programming so pursuing any computation with
+is limited to float for genetic programming so pursuing any computation
 involving the Sun's mass is quite challenging. In our first attempt, we
 immediately got overflaws. Once again, we had to backtrack and experiment with
 other planets with a smaller mass. We settled for Earth and Moon that both have
@@ -70,11 +70,15 @@ create a large population (typically 5000 individuals) and let the algorithm
 works during hundreds of generations (in this instance 500 generations).\\
 
 It is also worth mentionning that the algorithm did not always converged to the
-correct law but sometimes to laws that look really different. Some of them gave close results (Figure
+correct law but sometimes to laws that look really different. Some of them gave
+close results (Figure
 \ref{gp_2}) but other outputed irrelevant trajectories (Figure
-\ref{gp_3}). The latter being explained by stopping the evolution of too few individuals too early.\\
+\ref{gp_3}). The latter being explained by stopping the evolution of too few
+individuals too early.\\
 
-When used with a wide enough population genetic programming is an impressively efficient method capable of finding complex equations like Newton's law of universal gravitation.\\
+When used with a wide enough population genetic programming is an impressively
+efficient method capable of finding complex equations like Newton's law of
+universal gravitation.\\
 
 \begin{figure}
     \begin{lstlisting}
@@ -96,13 +100,15 @@ EASEA LOG [INFO]: Elapsed time: 297.674
 \begin{figure}
     \center
     \includegraphics[scale=.3]{img/newton_gp_1.png}
-    \caption{Earth trajectory with the result of a genetic program (\(f(r) = G \left( \frac{M_{Sun}(G + M_{Moon})}{r^2} + 0.95 \right)\))}
+    \caption{Earth trajectory with the result of a genetic program (\(f(r) = G
+        \left( \frac{M_{Sun}(G + M_{Moon})}{r^2} + 0.95 \right)\))}
     \label{gp_2}
 \end{figure}
 
 \begin{figure}
     \center
     \includegraphics[scale=.3]{img/newton_gp_2.png}
-    \caption{Earth trajectory with the result of a genetic program (\(f(r) = ((((\frac{M_{Earth}}{0.460538}/0.460538)/0.460538)/r)+(((\frac{M_{Earth}}{0.460538})/0.392773)/(r-G))+(((G-r)-(r+r))+(\frac{M_{Earth}}{0.460538})/(r-G)))))\))}
+    \caption{Earth trajectory with the result of a genetic program (\(f(r) =
+        ((((\frac{M_{Earth}}{0.460538}/0.460538)/0.460538)/r)+(((\frac{M_{Earth}}{0.460538})/0.392773)/(r-G))+(((G-r)-(r+r))+(\frac{M_{Earth}}{0.460538})/(r-G)))))\))}
     \label{gp_3}
 \end{figure}
