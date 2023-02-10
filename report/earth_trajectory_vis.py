@@ -121,7 +121,7 @@ def createFigureGP():
     estimated_polar_coord_theta = []
     estimated_cart_coord_x = []
     estimated_cart_coord_y = []
-    with open("earth_trajectory_test/earth_trajectory_gp_1_output.txt") as file:
+    with open("earth_trajectory_test/earth_trajectory_gp_output.txt") as file:
         for line in file:
             r, theta = line.split(',')
             estimated_polar_coord_r.append(float(r))

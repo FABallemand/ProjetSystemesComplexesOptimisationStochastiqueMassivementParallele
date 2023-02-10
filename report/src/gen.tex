@@ -51,6 +51,8 @@ In order to find Newton's law of universal gravitation using genetic
 programming we needed to adjust some parameters on top of the fitness
 measure.\\
 
+The first thing
+
 Initially, we gave our individual four binary operators (+,-,*,/), three
 constants (the mass of the sun, the mass of the earth and the gravitational
 constant) and
@@ -74,15 +76,15 @@ individuals and only 75 generations.\\
 
 \begin{figure}
     \begin{lstlisting}
-495        443.908s         2480000         2480000 0.000000000e+00 1.4e+04 3.3e+05 8.2e+06
-496        445.386s         2485000         2485000 0.000000000e+00 3.7e+03 1.6e+05 8.2e+06
-497        446.839s         2490000         2490000 0.000000000e+00 4.1e+03 1.7e+05 8.2e+06
-498        448.327s         2495000         2495000 0.000000000e+00 4.1e+03 1.5e+05 8.2e+06
-499        449.773s         2500000         2500000 0.000000000e+00 4.1e+03 1.7e+05 8.2e+06
-EASEA LOG [INFO]: Seed: 1676050646
+495        294.404s         2480000         2480000 0.000000000e+00 1.6e+12 2.1e+13 3.1e+14
+496        295.234s         2485000         2485000 0.000000000e+00 9.9e+11 1.7e+13 3.1e+14
+497        296.091s         2490000         2490000 0.000000000e+00 1.7e+12 2.1e+13 3.3e+14
+498        296.890s         2495000         2495000 0.000000000e+00 1.6e+12 2.0e+13 3.1e+14
+499        297.673s         2500000         2500000 0.000000000e+00 1.5e+12 2.0e+13 3.1e+14
+EASEA LOG [INFO]: Seed: 1676057640
 EASEA LOG [INFO]: Best fitness: 0
-EASEA LOG [INFO]: Elapsed time: 449.774
-((((G)*(s))*(e))/((r)*(r)))
+EASEA LOG [INFO]: Elapsed time: 297.674
+(((s)*((e)*(G)))/((r)*(r)))
 \end{lstlisting}
     \caption{Output of the EASEA genetic program (500 generations of 5000
         individuals)}
@@ -91,15 +93,15 @@ EASEA LOG [INFO]: Elapsed time: 449.774
 
 \begin{figure}
     \begin{lstlisting}
-495        440.582s         2480000         2480000 0.000000000e+00 2.1e+04 4.1e+05 8.2e+06
-496        441.881s         2485000         2485000 0.000000000e+00 5.0e+04 2.0e+06 1.4e+08
-497        443.036s         2490000         2490000 0.000000000e+00 2.9e+04 4.9e+05 8.2e+06
-498        444.144s         2495000         2495000 0.000000000e+00 3.2e+04 5.1e+05 8.2e+06
-499        445.236s         2500000         2500000 0.000000000e+00 3.2e+04 5.1e+05 8.2e+06
-EASEA LOG [INFO]: Seed: 1676051502
-EASEA LOG [INFO]: Best fitness: 0
-EASEA LOG [INFO]: Elapsed time: 445.236
-(((((e)/(e))+((G)+(((G)*(G))+(e))))*((s)*(G)))/((r)*(r)))
+295        219.753s         1480000         1480000 6.256640000e+06 1.3e+11 6.2e+12 3.1e+14
+296        220.728s         1485000         1485000 6.256640000e+06 2.0e+11 7.7e+12 3.1e+14
+297        221.699s         1490000         1490000 6.256640000e+06 3.1e+11 9.7e+12 3.1e+14
+298        222.707s         1495000         1495000 6.256640000e+06 3.8e+11 1.1e+13 3.1e+14
+299        223.687s         1500000         1500000 6.256640000e+06 1.3e+11 6.2e+12 3.1e+14
+EASEA LOG [INFO]: Seed: 1676058020
+EASEA LOG [INFO]: Best fitness: 6.25664e+06
+EASEA LOG [INFO]: Elapsed time: 223.687
+((((G)*(e))/(((r)*(r))/((s)+(G))))+((0.937549)*(G)))
 \end{lstlisting}
     \caption{Output of the EASEA genetic program (500 generations of 5000
         individuals)}

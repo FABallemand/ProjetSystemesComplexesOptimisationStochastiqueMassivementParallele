@@ -19,10 +19,8 @@ ___________________________________________________________________*/
 #define R 0
 #define THETA 1
 
-// static constexpr float sun_mass = 1.9884E30;				     //< Sun mass (kg)
-// static constexpr float earth_mass = 5.97229E24;					 //< Earth mass (kg)
-static constexpr float sun_mass = 1.9884E20;				     //< Sun mass (kg)
-static constexpr float earth_mass = 5.97229E14;					 //< Earth mass (kg)
+static constexpr float sun_mass = 5.972E24;				     //< Sun mass (kg)
+static constexpr float earth_mass = 7.6E22;					 //< Earth mass (kg)
 static constexpr float g_const = 6.67408E-11;					 //< Gravitational constant
 static constexpr float delta_t = (365.25 * 24 * 3600) / NB_SAMP; //< Duration between two steps
 
@@ -167,7 +165,7 @@ LDFLAGS+=
 \end
 
 \Default run parameters :        
-Number of generations : 500   	        // NB_GEN (300, 500)
+Number of generations : 300   	        // NB_GEN (300, 500)
 Time limit: 0 			                // In seconds, 0 to deactivate
 Population size : 5000			        // POP_SIZE (5000, 5000)
 Offspring size : 5000                   // can be a percentage such as 40% 
