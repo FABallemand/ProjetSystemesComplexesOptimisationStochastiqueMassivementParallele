@@ -19,8 +19,10 @@ ___________________________________________________________________*/
 #define R 0
 #define THETA 1
 
+// static constexpr float sun_mass = 1.9884E30;				     //< Sun mass (kg)
+// static constexpr float earth_mass = 5.97229E24;					 //< Earth mass (kg)
 static constexpr float sun_mass = 1.9884E20;				     //< Sun mass (kg)
-static constexpr float earth_mass = 5.97229E19;					 //< Earth mass (kg)
+static constexpr float earth_mass = 5.97229E14;					 //< Earth mass (kg)
 static constexpr float g_const = 6.67408E-11;					 //< Gravitational constant
 static constexpr float delta_t = (365.25 * 24 * 3600) / NB_SAMP; //< Duration between two steps
 

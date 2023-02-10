@@ -18,12 +18,12 @@ After some thought, we decided to do only one sampling with the correct
 universal law of gravitation. Knowing the position of the Earth in the
 heliocentric referential, we were able to compute the norm of the attractive
 force existing between Earth and Sun. Instead of computing the sum of the
-errors between the coordinates like in Sectin \ref{evol}, the error was set to
-correspond to the sum of the differences between the real force and the
+errors between the coordinates like in Section \ref{evol}, the error was set to
+correspond to the average of the differences between the real force and the
 estimated force at each point of the path (\Figure \ref{error_2}).\\
 
 \begin{figure}
-    \[ error = \sum_{i=0}^{n} | f(p_{i}) - \hat{f}(p_{i}) | \]
+    \[ error = \frac{1}{n} \sum_{i=0}^{n} | f(p_{i}) - \hat{f}(p_{i}) | \]
     where:
     \begin{itemize}
         \item \(n\) denotes the number of samples (typically 1024)
@@ -58,9 +58,9 @@ one variable (the distance between the two heavenly bodies). The program also
 had the possibility to generate constants between zero and one.\\
 
 Figure \ref{gp_1} shows it is possible to find the law albeit at the expense of
-a long computation time. In fact in order to find the exact law we need to
+a long computation time. In fact in order to find the exact law we needed to
 create a large population (typically 5000 individuals) and let the algorithm
-works during hundreds of generations (in htis instance 500 generations).\\
+works during hundreds of generations (in this instance 500 generations). It is also worth mentionning that the algorithm did not always converged to the correct law but sometimes to laws that look really different (Figure \ref{gp_2}) but give \\
 
 However, given the
 gigantic scale of our constant, the genetic program created suboptimal individuals with outliers
@@ -74,11 +74,6 @@ individuals and only 75 generations.\\
 
 \begin{figure}
     \begin{lstlisting}
-490        436.712s         2455000         2455000 0.000000000e+00 6.6e+03 2.2e+05 8.2e+06
-491        438.153s         2460000         2460000 0.000000000e+00 4.9e+03 1.8e+05 8.2e+06
-492        439.599s         2465000         2465000 0.000000000e+00 8.3e+03 2.5e+05 8.2e+06
-493        441.041s         2470000         2470000 0.000000000e+00 1.3e+04 3.3e+05 8.2e+06
-494        442.465s         2475000         2475000 0.000000000e+00 1.3e+04 3.2e+05 8.2e+06
 495        443.908s         2480000         2480000 0.000000000e+00 1.4e+04 3.3e+05 8.2e+06
 496        445.386s         2485000         2485000 0.000000000e+00 3.7e+03 1.6e+05 8.2e+06
 497        446.839s         2490000         2490000 0.000000000e+00 4.1e+03 1.7e+05 8.2e+06
@@ -92,6 +87,23 @@ EASEA LOG [INFO]: Elapsed time: 449.774
     \caption{Output of the EASEA genetic program (500 generations of 5000
         individuals)}
     \label{gp_1}
+\end{figure}
+
+\begin{figure}
+    \begin{lstlisting}
+495        440.582s         2480000         2480000 0.000000000e+00 2.1e+04 4.1e+05 8.2e+06
+496        441.881s         2485000         2485000 0.000000000e+00 5.0e+04 2.0e+06 1.4e+08
+497        443.036s         2490000         2490000 0.000000000e+00 2.9e+04 4.9e+05 8.2e+06
+498        444.144s         2495000         2495000 0.000000000e+00 3.2e+04 5.1e+05 8.2e+06
+499        445.236s         2500000         2500000 0.000000000e+00 3.2e+04 5.1e+05 8.2e+06
+EASEA LOG [INFO]: Seed: 1676051502
+EASEA LOG [INFO]: Best fitness: 0
+EASEA LOG [INFO]: Elapsed time: 445.236
+(((((e)/(e))+((G)+(((G)*(G))+(e))))*((s)*(G)))/((r)*(r)))
+\end{lstlisting}
+    \caption{Output of the EASEA genetic program (500 generations of 5000
+        individuals)}
+    \label{gp_2}
 \end{figure}
 
 % In the second part of the project, we had to find Newton's law of universal

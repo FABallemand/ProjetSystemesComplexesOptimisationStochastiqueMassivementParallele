@@ -20,6 +20,7 @@ int main()
     printf("Compute Earth trajectory around Sun\n");
     // Open output file
     FILE *output_file = NULL;
+    // if ((output_file = fopen("earth_trajectory_gp_output.txt", "w")) == NULL)
     if ((output_file = fopen("earth_trajectory_output.txt", "w")) == NULL)
     {
         fprintf(stderr, "Error: Unable to open output_file\n");
@@ -28,6 +29,7 @@ int main()
 
     // Constants
     float sun_mass = 1.9884E30;                         //< Sun mass
+    float earth_mass = 5.972E24;                        //< Earth mass
     float g_const = 6.67408E-11;                        //< Gravitational constant
     float delta_t = (365.25 * 24.0 * 3600.0) / NB_SAMP; //< Duration between two steps
 
@@ -52,6 +54,7 @@ int main()
         prev_speed[R] = curr_speed[R];
         prev_speed[THETA] = curr_speed[THETA];
 
+        // curr_speed[R] = prev_speed[R] + (trajectory[n - 1][R] * prev_speed[THETA] * prev_speed[THETA] - (1 / earth_mass) * ((g_const * g_const * g_const * sun_mass + g_const * g_const * sun_mass + 3.718282 * g_const * sun_mass) / (trajectory[n - 1][R] * trajectory[n - 1][R]))) * delta_t;
         curr_speed[R] = prev_speed[R] + (trajectory[n - 1][R] * prev_speed[THETA] * prev_speed[THETA] - ((g_const * sun_mass) / (trajectory[n - 1][R] * trajectory[n - 1][R]))) * delta_t;
         curr_speed[THETA] = prev_speed[THETA] + ((-2 * prev_speed[R] * prev_speed[THETA]) / trajectory[n - 1][R]) * delta_t;
 
